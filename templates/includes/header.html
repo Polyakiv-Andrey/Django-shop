@@ -1,0 +1,26 @@
+{% load static %}
+
+<header id="header" >
+  <img id='logo' src="{% static 'images/logo.png' %}" alt="logo">
+  <span class="company-name"> Trerddfy</span>
+  {% if user.is_superuser %}
+    <button class="admin-button" onclick="toggleHeaders()">
+      <span>Admin panel</span>
+    </button>
+  {% endif %}
+  <div class="burger-menu" onclick="toggleMenu()">
+    <i id="burger" class="fas fa-bars"></i>
+  </div>
+    <nav id="navigation">
+      <ul id="navigation-list">
+        <li class="nav-item first-nav-item"><a href="#"><i class="fas fa-home"></i><span> Home</span></a></li>
+        <li class="nav-item"><a href="#"><i class="fas fa-box"></i><span> Products</span></a></li>
+        <li class="nav-item"><a href="#"><i class="fas fa-users"></i><span> About Us</span></a></li>
+        <li class="nav-item"><a href="#"><i class="fas fa-star"></i><span> Review</span></a></li>
+        <li class="nav-item"><a href="#"><i class="fas fa-headset"></i><span> Support</span></a></li>
+      </ul>
+    </nav>
+  {% if user.is_superuser == False %}
+    <div id="basket"><a href="#"><i class="fas fa-shopping-basket fa-2x"></i></a></div>
+  {% endif %}
+</header>
