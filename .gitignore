@@ -2,7 +2,7 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,django,pycharm+all
 
 ### Django ###
-.idea
+.idea/codeStyles
 couchproapp-firebase-adminsdk-vy0mg-2e6d07eca0.json
 *.log
 *.pot
