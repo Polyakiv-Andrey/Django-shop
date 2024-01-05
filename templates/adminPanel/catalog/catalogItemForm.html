@@ -1,0 +1,25 @@
+<div id="modalOverlay" class="modal-overlay"></div>
+
+<div id="catalogItemModal" class="modal">
+  <div class="modal-content">
+    <form id="catalogItemForm" method="post" action="{% url 'admin-panel:catalog-item-add' %}" enctype="multipart/form-data">
+          <p class="file-upload-label catalog-title">Add catalog item</p>
+      {% csrf_token %}
+      <div class="form-group">
+        <input type="text" name="name" placeholder="Enter catalog item name" required>
+      </div>
+      <div class="form-group">
+        <label for="image" class="file-upload-label">Upload catalog item image</label>
+        <input type="file" name="image" id="image">
+      </div>
+      <div class="form-group">
+        <label for="icon" class="file-upload-label">Upload catalog item icon</label>
+        <input type="file" name="icon" id="icon">
+      </div>
+      <div class="form-buttons">
+      <button class="formButton" type="submit">Save</button>
+      <button type="button" id="cancelButton" class="formButton">Close</button>
+      </div>
+    </form>
+  </div>
+</div>

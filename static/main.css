@@ -234,3 +234,160 @@ body {
     margin: 10px;
   }
 }
+
+
+
+/*asdfadfsasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfs*/
+
+.notification {
+  visibility: hidden;
+  min-width: 150px;
+  background-color: #f44336;
+  color: white;
+  text-align: center;
+  border-radius: 4px;
+  padding: 16px;
+  position: fixed;
+  z-index: 1;
+  left: 50%;
+  top: 60px;
+  transform: translateX(-50%);
+}
+
+.notification.show {
+  visibility: visible;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+@-webkit-keyframes fadein {
+  from {top: 30px; opacity: 0;}
+  to {top: 60px; opacity: 1;}
+}
+
+@keyframes fadein {
+  from {top: 30px; opacity: 0;}
+  to {top: 60px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+  from {top: 60px; opacity: 1;}
+  to {top: 30px; opacity: 0;}
+}
+
+@keyframes fadeout {
+  from {top: 60px; opacity: 1;}
+  to {top: 30px; opacity: 0;}
+}
+
+
+#catalogItemForm {
+  max-width: 600px;
+  padding: 15px;
+  background-color: #e3ddfc;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+#catalogItemForm .form-group {
+  margin-bottom: 15px;
+}
+
+#catalogItemForm input[type="text"],
+#catalogItemForm input[type="file"],
+
+#catalogItemForm select,
+#catalogItemForm textarea {
+  width: 100%;
+  padding: 18px 10px 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.7);
+  box-sizing: border-box;
+}
+
+#catalogItemForm input[type="text"]:focus,
+#catalogItemForm input[type="file"]:focus,
+#catalogItemForm select:focus,
+#catalogItemForm textarea:focus {
+  outline: none;
+  border-color: #999;
+}
+
+#catalogItemForm button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  z-index: 2;
+}
+
+#catalogItemForm button:hover {
+  background-color: #45a049;
+}
+
+.file-upload-label {
+  display: inline-block;
+  margin-bottom: 5px;
+  color: purple;
+  text-align: center;
+  border-radius: 4px;
+
+}
+
+#catalogItemForm input::placeholder {
+  font-size: 130%;
+  font-style: italic;
+}
+
+.catalog-title {
+  margin: 0;
+  padding: 0;
+  margin-bottom: 15px;
+  font-size: 130%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.formButton {
+  padding: 10px 20px;
+  font-size: 14px;
+  color: #ffffff;
+  border: none;
+  border-radius: 20px;
+  background: linear-gradient(to right, #654ea3, darkgreen);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  text-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.formButton:hover {
+  background: linear-gradient(to right, #563d7c, #daa520);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.formButton:active {
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+#cancelButton {
+  background: linear-gradient(to right, #654ea3, darkred);
+}
+#cancelButton:hover {
+  background: linear-gradient(to right, #654ea3, yellow);
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+}
