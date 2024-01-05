@@ -1,3 +1,45 @@
+.notification {
+  visibility: hidden;
+  min-width: 150px;
+  background-color: #f44336;
+  color: white;
+  text-align: center;
+  border-radius: 4px;
+  padding: 16px;
+  position: fixed;
+  z-index: 1;
+  left: 50%;
+  top: 60px;
+  transform: translateX(-50%);
+}
+
+.notification.show {
+  visibility: visible;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+@-webkit-keyframes fadein {
+  from {top: 30px; opacity: 0;}
+  to {top: 60px; opacity: 1;}
+}
+
+@keyframes fadein {
+  from {top: 30px; opacity: 0;}
+  to {top: 60px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+  from {top: 60px; opacity: 1;}
+  to {top: 30px; opacity: 0;}
+}
+
+@keyframes fadeout {
+  from {top: 60px; opacity: 1;}
+  to {top: 30px; opacity: 0;}
+}
+
+
 #catalogItemForm {
   max-width: 600px;
   padding: 15px;
@@ -107,4 +149,29 @@
   display: flex;
   justify-content: center;
   gap: 40px;
+}
+
+@media screen and (max-width: 768px) {
+  #catalogItemForm {
+    max-width: 100%;
+    width: 100%;
+    height: calc(100% - 60px);
+    top: 60px;
+    left: 0;
+    transform: translate(0, 0);
+    border-radius: 0;
+  }
+  #catalogItemForm input[type="text"],
+  #catalogItemForm input[type="file"],
+  #catalogItemForm select,
+  #catalogItemForm textarea {
+    width: calc(100% - 30px);
+    margin-right: 20px;
+    box-sizing: border-box;
+  }
+  #main-header, #admin-header {
+    position: relative;
+    z-index: 1000;
+  }
+
 }

@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import generic
@@ -17,6 +18,7 @@ class CreateCatalogItemView(generic.CreateView):
     model = CatalogItem
     form_class = CatalogItemForm
     template_name = 'adminPanel/catalog/catalogItemForm.html'
+
 
     def form_valid(self, form):
         self.object = form.save()
