@@ -39,6 +39,21 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(response => response.json())
         .then(data => {
           if (data.status === 'success') {
+            const catalogItemsContainer = document.getElementById('catalogItemsContainer');
+            const firstItem = catalogItemsContainer.querySelector('.catalog-item:not(:first-child)');
+            if (firstItem) {
+              firstItem.insertAdjacentHTML('beforebegin', data.html);
+            } else {
+
+                catalogItemsContainer.insertAdjacentHTML('beforeend', data.html);
+            }
+            const items = catalogItemsContainer.getElementsByClassName('catalog-item');
+            const itemsPerPage = 11;
+            if (items.length > itemsPerPage) {
+              catalogItemsContainer.removeChild(items[items.length - 1]);
+            }
+            modal.style.display = 'none';
+            form.reset();
             modal.style.display = 'none';
             showNotification('Success', true);
           } else if (data.status === 'error') {

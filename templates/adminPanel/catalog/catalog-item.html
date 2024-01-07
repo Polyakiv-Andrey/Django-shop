@@ -1,0 +1,26 @@
+{% load static %}
+
+<div class="catalog-item">
+  <div class="catalog-image-container">
+      <div class="delete-button-container">
+  <form action="{% url 'catalog:delete_catalog' item.id %}" method="post" style="display: inline;">
+    {% csrf_token %}
+    <button type="submit" class="delete-button" title="delete">
+    </button>
+  </form>
+  </div>
+    {% if item.image %}
+      <img class="catalog-image" src="{{ item.image.url }}" alt="{{ item.name }}">
+    {% else %}
+      <img class="catalog-image" src="{% static 'images/defoult-catalog-item.png' %}" alt="{{ item.name }}">
+    {% endif %}
+  </div>
+  <div class="catalog-item-details">
+    {% if item.icon %}
+      <img class="catalog-icon" src="{{ item.icon.url }}" alt="{{ item.name }} icon">
+    {% else %}
+      <img class="catalog-icon" src="{% static 'images/defoultcatalog-icon.png' %}" alt="{{ item.name }} icon">
+    {% endif %}
+    <span class="catalog-name">{{ item.name }}</span>
+  </div>
+</div>
