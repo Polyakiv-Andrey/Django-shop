@@ -2,7 +2,15 @@
 
 <div class="catalog-item">
   <div class="catalog-image-container">
+
       <div class="delete-button-container">
+
+        <div class="edit-button-container" style="display: inline;">
+      <button type="button" class="edit-button" title="Edit" data-id="{{ item.id }}">
+
+      </button>
+    </div>
+
   <form action="{% url 'catalog:delete_catalog' item.id %}" method="post" style="display: inline;">
     {% csrf_token %}
     <button type="submit" class="delete-button" title="delete">

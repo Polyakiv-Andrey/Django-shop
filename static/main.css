@@ -245,16 +245,18 @@ body {
   border-radius: 4px;
   padding: 16px;
   position: fixed;
-  z-index: 1;
   left: 50%;
   top: 60px;
   transform: translateX(-50%);
+  z-index: 9999;
 }
+
 
 .notification.show {
   visibility: visible;
   -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
   animation: fadein 0.5s, fadeout 0.5s 2.5s;
+
 }
 
 @-webkit-keyframes fadein {
@@ -765,8 +767,6 @@ body {
   }
 }
 
-/*фывафвыафыфыв*/
-
 .catalog-image-container {
   position: relative;
 }
@@ -816,5 +816,48 @@ body {
   .delete-button {
     margin-top: 15px;
     z-index: 30;
+  }
+}
+
+.edit-button-container {
+  display: inline-block;
+  font-size: 24px;
+  color: #757575;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  position: absolute;
+  top: 6px;
+  right: 43px;
+  z-index: 2;
+}
+
+.edit-button-container .edit-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.edit-button::before {
+  font-family: "Font Awesome 5 Free";
+  content: "\f303";
+  font-weight: 900;
+  color: #7F58AF;
+  background: whitesmoke;
+  border: 1px solid darkslateblue;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  font-size: 18px;
+  margin-top: 3px;
+  margin-right: 0;
+
+}
+
+@media screen and (max-width: 768px) {
+  .edit-button-container {
+    top: 18px;
+    right: 43px;
   }
 }

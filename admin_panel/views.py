@@ -27,17 +27,3 @@ class AdminPanelView(generic.TemplateView):
         return context
 
 
-class CreateCatalogItemView(generic.CreateView):
-
-    model = CatalogItem
-    form_class = CatalogItemForm
-    template_name = 'adminPanel/catalog/catalogItemForm.html'
-
-    def form_valid(self, form):
-        self.object = form.save()
-        catalog_item_html = render_to_string('adminPanel/catalog/catalog-item.html', {'item': self.object})
-        return JsonResponse({'status': 'success', 'html': catalog_item_html})
-
-    def form_invalid(self, form):
-        return JsonResponse({'status': 'error', 'errors': form.errors}, status=400)
-

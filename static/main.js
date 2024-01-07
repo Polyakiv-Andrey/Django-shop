@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const modal = document.getElementById('catalogItemModal');
 
   document.getElementById('addCatalogItemBtn').addEventListener('click', function() {
-    fetch('/admin_panel/catalog-item-add/')
+    fetch('/catalog/catalog-item-add/')
       .then(response => response.text())
       .then(html => {
         document.getElementById('catalogItemModalContent').innerHTML = html;
@@ -127,6 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
             modal.style.display = 'none';
             form.reset();
             showNotification('Item added successfully!', true);
+            window.location.reload();
             setTimeout(() => {
             newItem.classList.remove('fade-in-scale-up');
              }, 2000);
@@ -213,10 +214,6 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-
-// фывафыва
-
-
 function rearrangeElements() {
     const catalogItems = document.querySelectorAll('.catalog-item');
 
@@ -236,3 +233,82 @@ document.addEventListener('DOMContentLoaded', rearrangeElements);
 window.addEventListener('resize', rearrangeElements);
 
 rearrangeElements();
+
+// йцукйцуккйц 12343424 Update
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.edit-button').forEach(button => {
+    button.addEventListener('click', function(event) {
+      event.stopPropagation();
+
+      document.querySelectorAll('.catalog-item.expanded').forEach(item => {
+        item.classList.remove('expanded');
+      });
+
+      const itemId = this.getAttribute('data-id');
+      openEditForm(itemId);
+
+});
+    });
+  });
+
+
+function openEditForm(itemId) {
+  fetch(`../catalog/${itemId}/update/`)
+    .then(response => response.text())
+    .then(html => {
+      const modalContent = document.getElementById('catalogItemModalContent');
+      modalContent.innerHTML = html;
+
+      const modal = document.getElementById('catalogItemModal');
+      modal.style.display = 'block';
+
+      updateFormSubmitHandler()
+        addCancelEventHandler()
+    })
+    .catch(error => {
+      console.error('Error loading edit form:', error);
+    });
+}
+
+function updateFormSubmitHandler() {
+  const form = document.getElementById('catalogItemForm');
+  if (form) {
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 'success') {
+            window.location.reload();
+        } else if (data.status === 'error') {
+          showNotification(Object.values(data.errors).join(', '), false);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        showNotification('Error: ' + error, false);
+      });
+    });
+  } else {
+    console.error('Form not found');
+  }
+}
+
+function showNotification(message, isSuccess) {
+  const notification = document.getElementById('notification');
+  notification.textContent = message;
+  notification.style.backgroundColor = isSuccess ? '#4CAF50' : '#f44336';
+  notification.classList.add('show');
+
+  setTimeout(() => {
+    notification.classList.remove('show');
+  }, 3000);
+}
