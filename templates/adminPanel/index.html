@@ -46,6 +46,13 @@
   <div class="grid-item right">
      <button class="toggleButton">To products</button>
     <h1 class="h1-admin-panel"><span>G</span><span>o</span><span>o</span><span>d</span><span>s</span></h1>
+  <div class="findContainer">
+  <form style="width: 75%" action="?" method="get">
+    <input class="goodsFinder" type="text" name="q" value="{{  request.GET.q|default_if_none:''}}">
+    <button class="findGoods" type="submit"></button>
+  </form>
+</div>
+
       <div id="catalogItemsContainer">
      <button id="addProductItemBtn">
       <div></div>

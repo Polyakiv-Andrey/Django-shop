@@ -1075,9 +1075,6 @@ input[id$="-image"] {
   border-radius: 12px;
 }
 
-.productInfo{
-}
-
 .productName {
   width: 138px;
   overflow: hidden;
@@ -1088,3 +1085,64 @@ input[id$="-image"] {
   margin: 0;
 }
 
+.goodsFinder {
+  width: 70%;
+  height: 30px;
+  border-radius: 30px;
+  border: 2px solid #6C63FF;
+}
+
+.findContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 0 20px;
+  width: 100%;
+}
+
+.findGoods {
+  height: 30px;
+  width: 30px;
+  border: none;
+  background: transparent;
+  position: relative;
+  cursor: pointer;
+  outline: none;
+  padding: 0;
+  border-radius: 50%;
+  margin-left: 10px;
+  margin-bottom: 10px;
+}
+
+.findGoods::before {
+  font-family: "Font Awesome 5 Free";
+  content: "\f002";
+  font-weight: 900;
+  color: #7F58AF;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 18px;
+  background: whitesmoke;
+  border: 1px solid darkslateblue;
+  border-radius: 50%;
+  padding: 8px;
+  height: calc(100% - 2px);
+  width: calc(100% - 2px);
+  line-height: 30px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.findGoods:active::before {
+  background-color: #D6D6F5;
+}
+
+.goodsFinder {
+    padding-left: 5px;
+    font-size: 16px;
+    color: #333;
+    font-family: 'Texturina', serif;
+}

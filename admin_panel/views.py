@@ -1,9 +1,6 @@
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.http import JsonResponse
-from django.template.loader import render_to_string
 from django.views import generic
 
-from catalog.forms import CatalogItemForm
 from catalog.models import CatalogItem
 from products.models import Product
 
@@ -25,7 +22,8 @@ class AdminPanelView(generic.TemplateView):
             catalog_items = paginator.page(paginator.num_pages)
 
         context['catalog_items'] = catalog_items
-        product_items_list = Product.objects.all().order_by('-id')
+        product_filter = self.request.GET.get("q")
+        product_items_list = Product.objects.all().order_by('-id').filter(name__contains=product_filter)
         paginator = Paginator(product_items_list, 11)
         page = self.request.GET.get('page')
 
