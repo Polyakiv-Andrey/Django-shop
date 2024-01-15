@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
   <div class="grid-container">
   <div class="grid-item left">
     <button class="toggleButton">To category items</button>
@@ -47,6 +46,32 @@
   <div class="grid-item right">
      <button class="toggleButton">To products</button>
     <h1 class="h1-admin-panel"><span>G</span><span>o</span><span>o</span><span>d</span><span>s</span></h1>
+      <div id="catalogItemsContainer">
+     <button id="addProductItemBtn">
+      <div></div>
+    </button>
+        {% for product in products %}
+      {% include 'adminPanel/products/product-item.html' with product=product %}
+    {% endfor %}
+      </div>
+  <div class="pagination">
+  <span class="step-links">
+    {% if products.has_previous %}
+      <a href="?page=1">&laquo; first</a>
+      <a href="?page={{ products.previous_page_number }}">previous</a>
+    {% endif %}
+
+    <span class="current">
+      Page {{ products.number }} of {{ products.paginator.num_pages }}.
+    </span>
+
+    {% if products.has_next %}
+      <a href="?page={{ products.next_page_number }}">next</a>
+      <a href="?page={{ products.paginator.num_pages }}">last &raquo;</a>
+    {% endif %}
+  </span>
+</div>
+
     <div id="catalogItemModal" class="modal">
       <div id="catalogItemModalContent" class="modal-content"></div>
     </div>
@@ -54,3 +79,4 @@
 </div>
 
 {% endblock %}
+

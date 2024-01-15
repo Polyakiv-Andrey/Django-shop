@@ -1,0 +1,24 @@
+{% load static %}
+
+<div class="catalog-item">
+  <div class="catalog-image-container">
+
+<div>
+  {% if product.images.all %}
+    <div>
+      {% for image in product.images.all %}
+        {% if image.main == True %}
+        <img class="productImage" src="{{ image.image.url }}" alt="{{ product.name }}">
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <img class="productImage" src="{% static 'images/default-product-item.png' %}" alt="{{ product.name }}">
+  {% endif %}
+</div>
+  <div class="productInfo">
+    <span class="productName">{{ product.name }} </span>
+    <span class="productName">Price: <span style="color: #4CAF50">{{ product.price }} $ </span></span>
+  </div>
+  </div>
+</div>

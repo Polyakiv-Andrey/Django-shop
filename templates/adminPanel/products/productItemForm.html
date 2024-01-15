@@ -1,0 +1,111 @@
+<div id="modalOverlay" class="modal-overlay"></div>
+
+<div id="catalogItemModal" class="modal">
+  <div class="modal-content">
+    <form id="catalogItemForm" class="productForm" method="post" action="{% url 'products:create_product' %}" enctype="multipart/form-data">
+    <p class="file-upload-label catalog-title">Add product</p>
+        {% csrf_token %}
+    <div class="form-group">
+    <label for="id_name"  class="file-upload-label">Name:</label>
+        {{ form.name }}
+    </div>
+
+    <div class="form-group">
+        <label for="id_brand"  class="file-upload-label">Brand:</label>
+        {{ form.brand }}
+    </div>
+
+    <div class="form-group" >
+        <label for="id_description"  class="file-upload-label">Description:</label>
+        {{ form.description }}
+    </div>
+
+    <div class="form-group">
+        <label for="id_catalog_item"  class="file-upload-label">Catalog item:</label>
+        <span class="catalogItemForm"> {{ form.catalog_item }} </span>
+    </div>
+
+    <div class="form-group" >
+        <label for="id_price"  class="file-upload-label">Price:</label>
+        {{ form.price }}
+    </div>
+
+    <div class="form-group">
+        <label for="id_inventory"  class="file-upload-label">Inventory:</label>
+        {{ form.inventory }}
+    </div>
+
+    <div id="discountContainer" style="display: none">
+        <h3 class="file-upload-label catalog-title">Discounts</h3>
+        {{ discounts.management_form }}
+        {% for form in discounts.forms %}
+            <div class="discounts-form">
+                {{ form.as_p }}
+            </div>
+        {% endfor %}
+    <div id="cancelDiscount">Cancel</div>
+    </div>
+
+          <input type="hidden" id="counter" value="0">
+    <div id="imagesFormContainer" style="display:none">
+        <h3 class="file-upload-label catalog-title">Product Images</h3>
+              {{ images.management_form }}
+          <label class="file-upload-label image-price-depend">
+          <input type="checkbox" name="priceDependsOnColor" id="priceDependsOnColor">
+          Price depend from color
+          </label>
+          <div id="formsContainer">
+              {% for form in images.forms %}
+                  <div class="images-form image{{ forloop.counter }}" style="display:none">
+                  <div class="deleteImage" onclick="closeAddImageBlock()">Delete</div>
+                      {{ form.as_p }}
+                  </div>
+              {% endfor %}
+          </div>
+          <div id="formTemplate" style="display:none">
+              <div class="images-form">
+                  {{ images.empty_form.as_p }}
+              </div>
+          </div>
+          </div>
+
+    <input type="hidden" id="counterProperties" value="0">
+    <div id="propertiesFormContainer" style="display:none">
+    <h3 class="file-upload-label catalog-title">Product Attributes</h3>
+    <div class="properties-header">
+        <span class="header-property header-property-name file-upload-label">Property</span>
+        <span class="header-property header-property-value file-upload-label">Value</span>
+        <span class="header-property header-property-title file-upload-label">Title</span>
+        <span class="header-property header-property-delete file-upload-label">Delete</span>
+    </div>
+        {{ attributes.management_form }}
+    <div id="formsContainer">
+        {% for form in attributes.forms %}
+             <div class="propertyForm property{{ forloop.counter }}" style="display:none">
+                {% for field in form %}
+                    {{ field }}
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+    <div id="formTemplate" style="display:none">
+              <div class="property-form">
+                  {{ images.empty_form.as_p }}
+              </div>
+          </div>
+    </div>
+
+    <div class="addNewForm">
+      <button type="button" id="addImageButton" class="addFormButton addImageButton" onclick="initializeAddImageButton()">Add image</button>
+      <button type="button" id="addDiscountButton" class="addFormButton" onclick="initializeAddDiscountButton()">Add discount</button>
+      <button type="button" id="addPropertyButton" class="addFormButton lastButton" onclick="initializeAddAttributeButton()">Add product property</button>
+    </div>
+
+        <div class="form-buttons">
+            <button class="formButton" type="submit">Save</button>
+            <button type="button" id="cancelButton" class="formButton">Cancel</button>
+        </div>
+    </form>
+  </div>
+</div>
+

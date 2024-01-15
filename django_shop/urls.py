@@ -25,6 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('admin_panel/', include("admin_panel.urls", namespace="admin-panel")),
     path('catalog/', include("catalog.urls", namespace="catalog")),
+    path('products/', include("products.urls", namespace="products")),
 ] + static(
     settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0]
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

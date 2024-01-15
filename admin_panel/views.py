@@ -5,6 +5,7 @@ from django.views import generic
 
 from catalog.forms import CatalogItemForm
 from catalog.models import CatalogItem
+from products.models import Product
 
 
 class AdminPanelView(generic.TemplateView):
@@ -24,6 +25,18 @@ class AdminPanelView(generic.TemplateView):
             catalog_items = paginator.page(paginator.num_pages)
 
         context['catalog_items'] = catalog_items
+        product_items_list = Product.objects.all().order_by('-id')
+        paginator = Paginator(product_items_list, 11)
+        page = self.request.GET.get('page')
+
+        try:
+            products = paginator.page(page)
+        except PageNotAnInteger:
+            products = paginator.page(1)
+        except EmptyPage:
+            products = paginator.page(paginator.num_pages)
+
+        context['products'] = products
         return context
 
 
