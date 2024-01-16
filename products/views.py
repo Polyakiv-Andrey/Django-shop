@@ -1,5 +1,6 @@
 from django.http import JsonResponse
 from django.template.loader import render_to_string
+from django.views import generic
 from django.views.generic.edit import CreateView
 
 from products.forms import *
@@ -54,3 +55,7 @@ class CreateProductView(CreateView):
     def form_invalid(self, form):
         return JsonResponse({'status': 'error', 'errors': form.errors}, status=400)
 
+
+class ProductDitailView(generic.DetailView):
+    model = Product
+    template_name = "adminPanel/products/product-detail.html"

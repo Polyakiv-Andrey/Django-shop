@@ -1112,7 +1112,6 @@ input[id$="-image"] {
   padding: 0;
   border-radius: 50%;
   margin-left: 10px;
-  margin-bottom: 10px;
 }
 
 .findGoods::before {
@@ -1120,9 +1119,6 @@ input[id$="-image"] {
   content: "\f002";
   font-weight: 900;
   color: #7F58AF;
-  position: absolute;
-  top: 50%;
-  left: 50%;
   transform: translate(-50%, -50%);
   font-size: 18px;
   background: whitesmoke;
@@ -1145,4 +1141,76 @@ input[id$="-image"] {
     font-size: 16px;
     color: #333;
     font-family: 'Texturina', serif;
+}
+
+@media screen and (max-width: 768px){
+  .productImage {
+    border: 2px solid steelblue;
+    border-radius: 12px;
+    margin-right: 4px;
+    margin-left: 4px;
+    width: 50px;
+    margin-top: 3px;
+  }
+  .catalog-image-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .productName {
+  width: 250px;
+}
+
+}
+
+#homeContainer {
+  background: #E3DDFC;
+  height: calc(100vh - 60px);
+  width: 100vw;
+}
+
+#homeContainer {
+  display: flex;
+  flex-wrap: wrap;
+}
+#homeContainer > div {
+  flex: 1 0 21%;
+  box-sizing: border-box;
+}
+
+.catalogHomeItem {
+  border: 3px solid slateblue;
+  border-radius: 30px;
+  margin: 8px;
+  cursor: pointer;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.catalogText {
+  padding: 8px;
+  background: #8c82f6;
+  color: #ffffff;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-radius: 30px;
+  margin: 10px;
+}
+
+.coverImage {
+  width: 100%;
+  height: 100%;
+  background: rgba(140, 130, 246, 0.4);
+  border-radius: 25px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.catalogHomeItem:hover {
+  transform: scale(1.05);
 }

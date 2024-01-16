@@ -1,8 +1,14 @@
 {% load static %}
 
-<div class="catalog-item">
+<div class="catalog-item productDetail" data-url="{% url 'products:product_detail' product.id %}">
   <div class="catalog-image-container">
-
+<script>
+    document.querySelectorAll('.productDetail').forEach(item => {
+        item.addEventListener('click', function() {
+            window.location.href = this.getAttribute('data-url');
+        });
+    });
+</script>
 <div>
   {% if product.images.all %}
     <div>

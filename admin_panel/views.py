@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.views import generic
 
@@ -5,7 +6,7 @@ from catalog.models import CatalogItem
 from products.models import Product
 
 
-class AdminPanelView(generic.TemplateView):
+class AdminPanelView(LoginRequiredMixin, generic.TemplateView):
     template_name = 'adminPanel/index.html'
 
     def get_context_data(self, **kwargs):
@@ -23,7 +24,9 @@ class AdminPanelView(generic.TemplateView):
 
         context['catalog_items'] = catalog_items
         product_filter = self.request.GET.get("q")
-        product_items_list = Product.objects.all().order_by('-id').filter(name__contains=product_filter)
+        product_items_list = Product.objects.all().order_by('-id')
+        if product_filter:
+            product_items_list = product_items_list.filter(name__contains=product_filter)
         paginator = Paginator(product_items_list, 11)
         page = self.request.GET.get('page')
 

@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views import generic
+from django.views.generic import TemplateView
 
 from catalog.forms import CatalogItemForm
 from catalog.models import CatalogItem
@@ -53,3 +54,13 @@ class UpdateCatalogItemView(generic.UpdateView):
 
     def form_invalid(self, form):
         return JsonResponse({'status': 'error', 'errors': form.errors}, status=400)
+
+
+class HomePageView(TemplateView):
+    template_name = "shop/homepage.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(HomePageView, self).get_context_data(**kwargs)
+        catalog_items = CatalogItem.objects.all()
+        context["catalog_items"] = catalog_items
+        return context

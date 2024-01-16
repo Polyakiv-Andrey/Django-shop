@@ -4,7 +4,7 @@ from catalog.views import (
     ListCatalogItemView,
     DeleteCatalogView,
     CreateCatalogItemView,
-    UpdateCatalogItemView
+    UpdateCatalogItemView,
 )
 
 urlpatterns = [

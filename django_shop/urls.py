@@ -18,6 +18,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
+from catalog.views import HomePageView
 from django_shop import settings
 
 
@@ -26,6 +27,7 @@ urlpatterns = [
     path('admin_panel/', include("admin_panel.urls", namespace="admin-panel")),
     path('catalog/', include("catalog.urls", namespace="catalog")),
     path('products/', include("products.urls", namespace="products")),
+    path('', HomePageView.as_view(), name="home"),
 ] + static(
     settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0]
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
