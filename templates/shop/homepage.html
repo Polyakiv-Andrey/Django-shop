@@ -3,17 +3,23 @@
 {% block content %}
 <div id="homeContainer">
 {% for item in catalog_items %}
-  <div class="catalogHomeItem"
+  <div class="catalogHomeItem" onclick="redirectToProductList({{ item.id }})"
        {% if item.image %}
        style="background-image: url({{ item.image.url }});"
        {% else %}
         style="background-image: url('/static/images/defoult-catalog-item.png');"
        {% endif %}
   >
+  <script>
+  function redirectToProductList(catalogItemId) {
+    window.location.href = `{% url 'products:product-list' %}?catalog_item_id=${catalogItemId}`;
+  }
+</script>
   <div class="coverImage">
     <span class="catalogText">{{ item.name }}</span>
   </div>
   </div>
+
 {% endfor %}
 
 </div>

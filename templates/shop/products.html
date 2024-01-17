@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load custom_filters %}
+
+{% block content %}
+  <div id="productGridContainer">
+  <div id="catalogCustomerList">
+    {% for item in catalog_items %}
+      <div class="CtlgItmCntnr" onclick="updateCatalogId({{ item.id }})">
+
+      <script>
+function updateCatalogId(catalogId) {
+  var currentUrl = window.location.href;
+  if (currentUrl.indexOf('catalog_item_id=') !== -1) {
+    var updatedUrl = currentUrl.replace(/(catalog_item_id=)[^\&]+/, '$1' + catalogId);
+  } else {
+    var separator = currentUrl.indexOf('?') !== -1 ? '&' : '?';
+    var updatedUrl = currentUrl + separator + 'catalog_item_id=' + catalogId;
+  }
+  window.location.href = updatedUrl;
+}
+</script>
+      {% if item.icon %}
+        <img class="itemIcons" src="{{ item.icon.url }}" alt="{{ item.name }}">
+        {% else %}
+         <img class="itemIcons" src="{% static 'images/defoultcatalog-icon.png' %}" alt="{{ item.name }}">
+        {% endif %}
+        <span class="itmNm">{{ item.name }} </span>
+      </div>
+    {% endfor %}
+  </div>
+  <div id="productCustomerList">
+    <div class="findContainer findProductConteiner">
+  <form style="width: 75%" action="?" method="get">
+    <input class="goodsFinder productFinder" type="text" name="q" value="{{  request.GET.q|default_if_none:''}}">
+    <button class="findGoods" type="submit"></button>
+  </form>
+</div>
+  <div class="flexProductContainer">
+    {% for product in products %}
+        {% include "shop/products-item.html" with product=product %}
+    {% endfor %}
+  </div>
+
+  <div class="pagination">
+  <span class="step-links">
+    {% if products.has_previous %}
+      <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}&page=1">&laquo; first</a>
+      <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}&page={{ products.previous_page_number }}">previous</a>
+    {% endif %}
+
+    <span class="current">
+      Page {{ products.number }} of {{ products.paginator.num_pages }}.
+    </span>
+
+    {% if products.has_next %}
+      <a href="?{% for key, value in request.GET.items %}&{{ key }}={{ value }}{% endfor %}&page={{ products.next_page_number }}">next</a>
+      <a href="?{% for key, value in request.GET.items %}&{{ key }}={{ value }}{% endfor %}&page={{ products.paginator.num_pages }}">last &raquo;</a>
+    {% endif %}
+  </span>
+</div>
+  </div>
+  <div id="productFilters">
+    <button> Delete all filters</button>
+    <div>price</div>
+    <div>brand</div>
+    <div>available</div>
+    <div>discount</div>
+    <div>Products properties</div>
+
+
+  </div>
+  </div>
+{% endblock %}

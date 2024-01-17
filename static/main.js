@@ -646,3 +646,16 @@ function initializeAddDiscountButton() {
           end_date.value = ""
       })
 }
+
+
+// function updateCatalogId(catalogId) {
+//   var currentUrl = window.location.href;
+//
+//   if (currentUrl.indexOf('catalog_id=') !== -1) {
+//     var updatedUrl = currentUrl.replace(/(catalog_id=)[^\&]+/, '$1' + catalogId);
+//   } else {
+//     var separator = currentUrl.indexOf('?') !== -1 ? '&' : '?';
+//     var updatedUrl = currentUrl + separator + 'catalog_id=' + catalogId;
+//   }
+//   window.location.href = updatedUrl;
+// }

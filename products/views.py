@@ -1,8 +1,12 @@
+from django.core.exceptions import FieldError
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.db.models import Q
 from django.http import JsonResponse
 from django.template.loader import render_to_string
 from django.views import generic
 from django.views.generic.edit import CreateView
 
+from catalog.models import CatalogItem
 from products.forms import *
 from .models import Product
 
@@ -59,3 +63,45 @@ class CreateProductView(CreateView):
 class ProductDitailView(generic.DetailView):
     model = Product
     template_name = "adminPanel/products/product-detail.html"
+
+
+class ProductCustomerList(generic.TemplateView):
+    template_name = 'shop/products.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ProductCustomerList, self).get_context_data(**kwargs)
+        context["catalog_items"] = CatalogItem.objects.all()
+        products = Product.objects.all()
+        filter_params = self.request.GET
+        filter_q = Q()
+        for key, value in filter_params.items():
+            if key == "q":
+                continue
+            filter_q &= Q(**{key: value})
+            try:
+                products = products.filter(filter_q)
+            except FieldError as e:
+                print(e)
+                continue
+        product_filter = self.request.GET.get("q")
+        if product_filter:
+            products = products.filter(name__icontains=product_filter)
+        paginator = Paginator(products, 25)
+        page = self.request.GET.get('page')
+
+        try:
+            products = paginator.page(page)
+        except PageNotAnInteger:
+            products = paginator.page(1)
+        except EmptyPage:
+            products = paginator.page(paginator.num_pages)
+
+        # product_attributes = {}
+
+        # for product in products:
+        #     attributes = ProductAttribute.objects.filter(product=product, title=False)
+        #     product_attributes[product.id] = {attr.name: [attr.value] for attr in attributes}
+
+        context["products"] = products
+        # context["product_attributes"] = product_attributes
+        return context
