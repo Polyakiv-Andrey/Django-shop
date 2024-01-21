@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'catalog',
     'admin_panel',
     'products',
+    'basket'
 ]
 
 MIDDLEWARE = [
@@ -51,6 +52,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'basket.middlewares.UserCookiesIdMiddleware',
 ]
 
 ROOT_URLCONF = 'django_shop.urls'

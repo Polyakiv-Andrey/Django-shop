@@ -1,0 +1,8 @@
+{% load static %}
+<div id="emptyBasket">
+  <div>
+    <div id="basketWarnText">Your basket is empty!!!</div>
+    <img id="basketEmptyImg" src="{% static 'images/emptyBasket.png' %}" alt="empty basket">
+    <button class="returnBack" onclick="window.history.back()">Return back</button>
+  </div>
+</div>

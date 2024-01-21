@@ -21,6 +21,35 @@
       </ul>
     </nav>
   {% if user.is_superuser == False %}
-    <div id="basket"><a href="#"><i class="fas fa-shopping-basket fa-2x"></i></a></div>
+    <div id="basket"><a href="{% url 'basket:list' %}"><i id="mainBasketIcon" class="fas fa-shopping-basket fa-2x"></i></a></div>
+
+  <script>
+  function getCookiesObject() {
+  const cookies = document.cookie.split(';').map(cookie => cookie.trim());
+
+  const cookiesObject = {};
+
+  for (const cookie of cookies) {
+    const [name, value] = cookie.split('=');
+    cookiesObject[name] = value;
+  }
+
+  return cookiesObject;
+}
+let amountGoods = 0;
+const allCookies = getCookiesObject();
+
+for (const key in allCookies) {
+  if (!isNaN(+allCookies[key])) {
+
+    amountGoods += parseInt(allCookies[key]);
+  }
+}
+
+const mainBasket = document.getElementById("mainBasketIcon");
+mainBasket.innerText = amountGoods;
+
+</script>
+
   {% endif %}
 </header>

@@ -1,3 +1,66 @@
 <div class="productCustomerContainer">
-{{ product.name }}
+    <div class="flexBoxProduct">
+      {{ product.name }}
+      <div class="productBasket">
+        <span class="plusBasket basketSymbol" data-product-id="{{ product.id }}" onclick="addToBasket(this)">+</span>
+        <i id="basket-{{ product.id }}" class="fas fa-shopping-basket"></i>
+        <span class="minusBasket basketSymbol" data-product-id="{{ product.id }}" onclick="removeFromBasket(this)">-</span>
+      </div>
+    </div>
 </div>
+
+<script>
+  function addToBasket(element) {
+    let productId = element.getAttribute('data-product-id');
+    let basket = document.getElementById(`basket-${productId}`);
+    let count = getBasketCount(productId);
+    count++;
+    basket.innerText = count;
+    setBasketCount(productId, count);
+    let mainBasket = document.getElementById("mainBasketIcon")
+      mainBasket.innerText++
+  }
+
+  function removeFromBasket(element) {
+    let productId = element.getAttribute('data-product-id');
+    let basket = document.getElementById(`basket-${productId}`);
+    let count = getBasketCount(productId);
+    if (count > 0) {
+      count--;
+      basket.innerText = count;
+      setBasketCount(productId, count);
+      let mainBasket = document.getElementById("mainBasketIcon")
+      mainBasket.innerText--
+    }
+  }
+
+  function setBasketCount(productId, count) {
+    if (count === 0) {
+      document.cookie = `basket_${productId}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
+    } else {
+      document.cookie = `basket_${productId}=${count}; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/`;
+    }
+  }
+
+  function getBasketCount(productId) {
+    let name = `basket_${productId}=`;
+    let decodedCookie = decodeURIComponent(document.cookie);
+    let cookieArray = decodedCookie.split(';');
+    for (let i = 0; i < cookieArray.length; i++) {
+      let cookie = cookieArray[i].trim();
+      if (cookie.indexOf(name) === 0) {
+        return parseInt(cookie.substring(name.length)) || 0;
+      }
+    }
+    return 0;
+  }
+
+  window.onload = function() {
+    let productIds = Array.from(document.querySelectorAll('.plusBasket, .minusBasket')).map(element => element.getAttribute('data-product-id'));
+    productIds.forEach(productId => {
+      let basket = document.getElementById(`basket-${productId}`);
+      let count = getBasketCount(productId);
+      basket.innerText = count;
+    });
+  };
+</script>

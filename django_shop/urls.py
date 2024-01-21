@@ -27,6 +27,7 @@ urlpatterns = [
     path('admin_panel/', include("admin_panel.urls", namespace="admin-panel")),
     path('catalog/', include("catalog.urls", namespace="catalog")),
     path('products/', include("products.urls", namespace="products")),
+    path('basket/', include("basket.urls", namespace="basket")),
     path('', HomePageView.as_view(), name="home"),
 ] + static(
     settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0]

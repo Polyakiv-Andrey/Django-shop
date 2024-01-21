@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div id="basketDetail" >
+{% for prodact in basket.goods.all %}
+  <div>{{ prodact }}</div>
+{% empty %}
+  {% include 'includes/basketEmptyPage.html' %}
+{% endfor %}
+</div>
+
+{% endblock %}
