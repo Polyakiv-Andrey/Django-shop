@@ -10,6 +10,10 @@ class Goods(models.Model):
     def __str__(self):
         return f"{self.product.name} - {self.amount}"
 
+    @property
+    def get_total(self):
+        return self.amount * self.product.price
+
 
 class Basket(models.Model):
     goods = models.ManyToManyField('Goods', related_name="basket")
@@ -17,3 +21,7 @@ class Basket(models.Model):
 
     def __str__(self):
         return self.user_id
+
+    @property
+    def get_basket_total_price(self):
+        return sum(good.get_total for good in self.goods.all())

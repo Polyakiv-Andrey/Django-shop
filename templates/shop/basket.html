@@ -1,13 +1,66 @@
 {% extends 'base.html' %}
+{% load static %}
+
 
 {% block content %}
 
 <div id="basketDetail" >
+<div>
 {% for prodact in basket.goods.all %}
-  <div>{{ prodact }}</div>
+  <div class="basketDitailContainer">
+  {% for image in prodact.product.images.all %}
+
+    {% if image.main %}
+      <img class="basketProductImage" src="{{ image.image.url }}" alt="{{ prodact.product.name }}">
+    {% endif %}
+  {% empty %}
+    <img class="basketProductImage" src="{% static 'images/default-product-item.png' %}" alt="{{ prodact.product.name }}">
+  {% endfor %}
+  <div class="basketProductName">
+    {{ prodact.product.name }}
+    <div class="basketProductDescription">{{ prodact.product.description }}</div>
+  </div>
+  <div style="display: flex; flex-flow: column">
+    {% if prodact.product.inventory > prodact.amount %}
+      <div class="available" style="color: #4CAF50">Available</div>
+    {% else %}
+      <div class="available" style="color: red">Not enough stock available</div>
+    {% endif %}
+    <div class="basketProductPrice">Price: {{ prodact.product.price }} $</div>
+    <div class="basketProductPrice">Brand: {{ prodact.product.brand }}</div>
+  </div>
+<div class="basketIconIn" style="display: flex">
+  <span class="operator plusBasketItem"
+      data-product-id="{{ product.product.id }}"
+      data-update-url="{% url 'basket:plus_basket' prodact.product.id %}"
+      onclick="window.location.href = this.getAttribute('data-update-url');">+</span>
+  <div><i class="fas fa-shopping-basket fa-2x">{{ prodact.amount }}</i></div>
+  <span class="operator minusBasketItem" data-product-id="{{ product.product.id }}"
+      data-update-url="{% url 'basket:minus_basket' prodact.product.id %}"
+      onclick="window.location.href = this.getAttribute('data-update-url');">-</span>
+</div>
+  <div class="itemSum">Total:  {{ prodact.get_total|floatformat:"2" }}</div>
+ <form action="{% url 'basket:delete-item' prodact.product.id %}" method="post" style="display: inline;">
+    {% csrf_token %}
+    <button type="submit" class="delete-button" title="delete"></button>
+  </form>
+
+  </div>
+
 {% empty %}
   {% include 'includes/basketEmptyPage.html' %}
 {% endfor %}
+</div>
+
+  {% if basket.goods.all %}
+    <div id="buyButtonContainer">
+    <button id="buyButton">Buy</button>
+    </div>
+    <div>
+    <div class="totalPrice">Total: {{ basket.get_basket_total_price|floatformat:"2" }}</div>
+    </div>
+  {% endif %}
+
 </div>
 
 {% endblock %}
