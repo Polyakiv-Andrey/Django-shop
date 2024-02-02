@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+  <div class="formTitles" style="display: flex; justify-content: center; align-items: center;">
+  <div id="deliveryTitle" class="tableTitle">Delivery Information</div>
+  <div id="paymentTitle" class="tableTitle">Payment</div>
+  </div>
+  <div id="formContainer">
+  <div>
+    <img class="logisticPicture"src="{% static 'images/delivery.webp' %}" alt="logistic picture">
+  </div>
+  <div>
+  <form method="post" action="{% url 'logistic:create-update-delivery-ditail' %}" style="margin-top: 30px">
+    {% csrf_token %}
+    <ul class="form-style">
+      {% for field in form %}
+         {% if forloop.counter == 1 %}
+      <li class="form-item" style="display: none;">
+        <div class="form-label">{{ field.label }}</div>
+        <div class="form-field">{{ field }}</div>
+      </li>
+    {% else %}
+      <li class="form-item">
+        <div class="form-label">{{ field.label }}</div>
+        <div class="form-field">{{ field }}</div>
+      </li>
+    {% endif %}
+      {% endfor %}
+    </ul>
+
+    <button class="form-button" type="submit">Submit</button>
+  </form>
+  </div>
+  </div>
+
+{% endblock %}

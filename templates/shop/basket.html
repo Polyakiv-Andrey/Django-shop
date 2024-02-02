@@ -54,8 +54,13 @@
 
   {% if basket.goods.all %}
     <div id="buyButtonContainer">
-    <button id="buyButton">Buy</button>
+    <button id="buyButton" onclick="redirectToDeliveryDetail('{% url 'logistic:create-update-delivery-ditail' %}')">Buy</button>
     </div>
+    <script>
+    function redirectToDeliveryDetail(url) {
+        window.location.href = url;
+    }
+</script>
     <div>
     <div class="totalPrice">Total: {{ basket.get_basket_total_price|floatformat:"2" }}</div>
     </div>
