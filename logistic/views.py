@@ -6,7 +6,7 @@ from logistic.forms import DeliveryDetailForm
 from logistic.models import DeliveryDetail
 
 
-class CreateUpdateDetailDeliveryAPIView(generic.View):
+class CreateUpdateDetailDeliveryView(generic.View):
     template_name = 'shop/logistic_info.html'
 
     def get(self, request, *args, **kwargs):
@@ -28,11 +28,6 @@ class CreateUpdateDetailDeliveryAPIView(generic.View):
 
         if form.is_valid():
             form.save()
-            return redirect('products:product-list')
+            return redirect('payment:create-payment')
 
         return render(request, self.template_name, {'form': form})
-
-
-    # model = DeliveryDetail
-    # form_class = DeliveryDetailForm
-    # success_url = reverse_lazy("catalog:catalog-list")

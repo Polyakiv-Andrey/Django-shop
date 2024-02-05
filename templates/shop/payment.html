@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+  <div id="loading-overlay">
+    <div id="spinner"></div>
+  </div>
+   <div id="notification" class="notification"></div>
+  <div class="formTitles" style="display: flex; justify-content: center; align-items: center;">
+  <div id="deliveryTitle" class="tableTitle">Delivery Information</div>
+  <div id="paymentTitle" class="tableTitle" style="background: greenyellow">Payment</div>
+  </div>
+ <div id="formContainer">
+  <div>
+    <img class="logisticPicture" src="{% static 'images/paymentPage.png' %}" alt="logistic picture">
+  </div>
+  <div id="divCard">
+    <span id="paymentForm">Payment form</span>
+  <form action="{% url 'payment:create-payment' %}" method="post" id="payment-form">
+  {% csrf_token %}
+  <div id="card-element">
+
+  </div>
+
+
+  <div id="card-errors" role="alert"></div>
+    {% for goods in basket.goods.all %}
+      <div id="productHolderPayment">
+      <div class="goodsPicturePayment">
+         {% for image in goods.product.images.all %}
+          {% if image.main %}
+            <img class="goodImagePayment" src="{{ image.image.url }}" alt="{{ prodact.product.name }}">
+          {% endif %}
+          {% empty %}
+            <img class="goodImagePayment" src="{% static 'images/default-product-item.png' %}" alt="{{ prodact.product.name }}">
+          {% endfor %}
+      </div>
+      <div class="goodsInfoPayment">
+        <div>Name: {{ goods.product.name }}</div>
+        <div>Amount: {{ goods.amount }}</div>
+        <div>Total: <span style="color: #4CAF50">{{ goods.get_total }}</span></div>
+      </div>
+      </div>
+    {% endfor %}
+
+  <div id="totalPricePayment">Total: <span style="color: green"> {{ basket.get_basket_total_price }}</span></div>
+
+  <button id="buyBasket">Submit Payment</button>
+  </form>
+
+  <script src="https://js.stripe.com/v3/"></script>
+
+    <script>
+      var form = document.getElementById('payment-form');
+      var loadingOverlay = document.getElementById('loading-overlay');
+
+      var stripe = Stripe('{{ stripe_public_key }}');
+      var elements = stripe.elements();
+
+      var card = elements.create('card');
+      card.mount('#card-element');
+
+      var form = document.getElementById('payment-form');
+      form.addEventListener('submit', function(event) {
+          event.preventDefault();
+          loadingOverlay.style.display = 'flex';
+          stripe.createPaymentMethod({
+              type: 'card',
+              card: card,
+          }).then(function(result) {
+              if (result.error) {
+                  console.log('Error:', result.error);
+              } else {
+                  fetch('{% url 'payment:create-payment' %}', {
+                      method: 'POST',
+                      headers: {
+                          'Content-Type': 'application/json',
+                          'X-CSRFToken': getCookie('csrftoken'),
+                      },
+                      body: JSON.stringify({ payment_method_id: result.paymentMethod.id })
+                  })
+                  .then(function(response) {
+                      return response.json();
+                  })
+                  .then(function(responseJson) {
+                      console.log('Server response:', responseJson);
+
+                      if (responseJson.message === 'Payment successful') {
+                          if (responseJson.redirect_url) {
+                              window.location.href = responseJson.redirect_url;
+                          } else {
+                              window.location.reload();
+                          }
+                      } else {
+                          console.log('Payment failed!');
+                          showNotification('Payment failed!', false);
+                      }
+                  })
+                  .catch(function(error) {
+                      console.error('Error during fetch:', error);
+                  })
+                  .finally(function() {
+                  loadingOverlay.style.display = 'none';
+              });
+
+              }
+          }).catch(function(error) {
+              console.error('Error creating payment method:', error);
+          });
+      });
+
+       function getCookie(name) {
+          var value = "; " + document.cookie;
+          var parts = value.split("; " + name + "=");
+          if (parts.length == 2) return parts.pop().split(";").shift();
+        }
+          </script>
+
+  </div>
+</div>
+
+{% endblock %}
