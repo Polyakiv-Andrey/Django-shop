@@ -27,3 +27,4 @@ class Order(models.Model):
     delivery_info = models.ForeignKey(DeliveryDetail, on_delete=models.CASCADE, related_name="order")
     goods = models.ManyToManyField(Goods, related_name="order", blank=True)
     user_id = models.CharField()
+    data_created = models.DateTimeField(auto_created=True, blank=True, null=True)

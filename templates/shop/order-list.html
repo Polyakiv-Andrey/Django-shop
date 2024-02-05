@@ -1,5 +1,98 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 
+    <ul class="ulOrder">
+    {% for order in order_list %}
+      <li class="orderItem">
+        <div class="orderN">Order № {{ order.id }}</div>
+      <div style="display: flex">
+        <div class="orderInfoDitail">
+          <div class="orderInfoTitle">Order Info</div>
+          <div class="orderInside">
+          <div>Receiver: {{ order.delivery_info.first_name }} {{ order.delivery_info.last_name }}</div>
+            <div>Email: {{ order.delivery_info.email }}</div>
+            <div>Phone: {{ order.delivery_info.phone }}</div>
+            <div>Place of delivery:
+              {{ order.delivery_info.country }}
+              {{ order.delivery_info.city }}
+              {{ order.delivery_info.street_address }}
+              {{ order.delivery_info.postal_code }}
+               <div>Data created: {{ order.data_created }}</div>
+              </div>
+            </div>
+        </div>
+        <div class="orderInfo">
+          <div>
+            <div class="orderGoodsTitle">Goods</div>
+            <ul>
+              {% for good in order.goods.all %}
+                <li style="list-style: none">
+                  <div class="orderProduct">
+                    <div>
+                      {% if good.product.images.all %}
+                        <div>
+                          {% for image in good.product.images.all %}
+                            {% if image.main == True %}
+                            <img class="productImageOrder" src="{{ image.image.url }}" alt="{{ good.product.name }}">
+                            {% endif %}
+                          {% endfor %}
+                        </div>
+                      {% else %}
+                        <img class="productImageOrder" src="{% static 'images/default-product-item.png' %}" alt="{{ good.product.name }}">
+                      {% endif %}
+                    </div>
+                    <div>
+                      <div>Name: {{ good.product.name }}</div>
+                      <div>Amount: {{ good.amount }}</div>
+                    </div>
+                  </div>
+                  {% if order.delivery_status == "delivered" %}
+                    <input class="comment">
+                    <input class="stars">
+                  {% endif %}
+                </li>
+              {% endfor %}
+
+            </ul>
+          </div>
+        </div>
+        <div class="orderProgressScale">
+        <div class="scaleElem scaleElem1 green">Order created</div>
+        <div class="scaleElem scaleElem2 {% if order.delivery_status != 'created' %}green{% endif %}">Take in work</div>
+        <div class="scaleElem scaleElem3 {% if order.delivery_status == 'shipped' or order.delivery_status == 'delivered' %}green{% endif %}">Send</div>
+        <div class="scaleElem scaleElem4 {% if order.delivery_status == 'delivered' %}green{% endif %}">Delivered</div>
+          <style>
+            .green { background: #4CAF50; }
+          </style>
+
+        </div>
+      </div>
+      </li>
+    {% endfor %}
+  </ul>
+  {% if order_list %}
+  <div class="pagination">
+    <span class="step-links">
+      {% if order_list.has_previous %}
+        <a href="?page=1">&laquo; first</a>
+        <a href="?page={{ order_list.previous_page_number }}">previous</a>
+      {% endif %}
+
+      <span class="current">
+        Page {{ order_list.number }} of {{ order_list.paginator.num_pages }}.
+      </span>
+
+      {% if order_list.has_next %}
+        <a href="?page={{ order_list.next_page_number }}">next</a>
+        <a href="?page={{ order_list.paginator.num_pages }}">last &raquo;</a>
+      {% endif %}
+    </span>
+  </div>
+  {% endif %}
+  {% if not order_list %}
+      {% include 'includes/orderEmptyPage.html' %}
+    <style>.ulOrder{display: none}</style>
+  {% endif %}
 {% endblock %}
