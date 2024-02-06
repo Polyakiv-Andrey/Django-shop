@@ -2,6 +2,174 @@
 {% load static %}
 
 {% block content %}
+  <script>
+  document.addEventListener('DOMContentLoaded', function () {
+        var productBlocks = document.querySelectorAll('.reviewDiv');
+
+        productBlocks.forEach(function (block) {
+            var goodsId = block.getAttribute('goods-id');
+
+            var textarea = block.querySelector('.reviewText');
+
+            fetch('/reviews/comment-product/' + goodsId + "/")
+                .then(response => response.json())
+                .then(data => {
+
+                    if (data.comment) {
+                        textarea.value = data.comment;
+                    }
+                });
+        });
+    });
+
+
+  document.addEventListener('DOMContentLoaded', function() {
+
+    var buttons = document.querySelectorAll('.sendComment');
+
+    buttons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            var goodsId = this.getAttribute('goods-id');
+            var textArea = document.querySelector('.reviewText[goods-id="'+ goodsId +'"]');
+            var comment = textArea.value;
+
+            if (comment) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '/reviews/comment-product/' + goodsId + "/", true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.setRequestHeader('X-CSRFToken', getCSRFToken());
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        var response = JSON.parse(xhr.responseText);
+                        alert(response.status);
+                    }
+                };
+                xhr.send(JSON.stringify({ comment: comment}));
+            }
+        });
+    });
+});
+
+
+  async function checkCommentStatus(goodsId) {
+        try {
+            const response = await fetch(`/reviews/comment-product/${goodsId}/`);
+            const data = await response.json();
+
+            if (data.comment_created === true) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (error) {
+            console.error('Error checking comment status:', error);
+            return false;
+        }
+    }
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const starElements = document.querySelectorAll('.star');
+        starElements.forEach(star => {
+            handleStarRating(star);
+        });
+    const stars = document.querySelectorAll('.star-rating span');
+
+    stars.forEach(star => {
+        star.addEventListener('click', function() {
+            const rating = this.getAttribute('data-value');
+            const goodsId = this.getAttribute('goods-id');
+            console.log(123)
+            setRating(rating, goodsId);
+
+        });
+    });
+});
+
+async function getRating(goodsId) {
+    try {
+        const response = await fetch('/reviews/rate-product/' + goodsId + '/');
+        const data = await response.json();
+        console.log(data.rating);
+        return data.rating;
+    } catch (error) {
+        console.error('Error fetching rating:', error);
+        return null;
+    }
+}
+
+async function handleStarRating(starElement) {
+    const goodsId = starElement.getAttribute('goods-id');
+    const dataValue = +starElement.getAttribute('data-value');
+
+    try {
+        const rating = await getRating(goodsId);
+        console.log(rating);
+
+        if (rating !== null) {
+            if (rating >= dataValue) {
+                starElement.style.color = 'yellow';
+            } else {
+                starElement.style.color = 'black';
+                starElement.classList.remove('hover-effect');
+            }
+
+            starElement.addEventListener('mouseover', () => {
+                if (rating <= dataValue) {
+                    starElement.classList.add('hover-effect');
+                }
+            });
+
+            starElement.addEventListener('mouseout', () => {
+                starElement.classList.remove('hover-effect');
+            });
+        }
+    } catch (error) {
+        console.error('Error handling star rating:', error);
+    }
+}
+
+
+function setRating(rating, goodsId) {
+  fetch('/reviews/rate-product/' + goodsId + '/', {
+      method: 'POST',
+      body: JSON.stringify({ rating: rating }),
+      headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCSRFToken()
+      }
+  })
+  .then(response => response.json())
+  .then(data => {
+      console.log('Success:', data);
+      const starElements = document.querySelectorAll('.star');
+        starElements.forEach(star => {
+            handleStarRating(star);
+        });
+  })
+  .catch((error) => {
+      console.error('Error:', error);
+  });
+}
+
+
+function getCSRFToken() {
+    let name = 'csrftoken';
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            let cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+  </script>
+
 
     <ul class="ulOrder">
     {% for order in order_list %}
@@ -28,6 +196,8 @@
             <div class="orderGoodsTitle">Goods</div>
             <ul>
               {% for good in order.goods.all %}
+                <div style="display: flex">
+                <div>
                 <li style="list-style: none">
                   <div class="orderProduct">
                     <div>
@@ -40,19 +210,37 @@
                           {% endfor %}
                         </div>
                       {% else %}
-                        <img class="productImageOrder" src="{% static 'images/default-product-item.png' %}" alt="{{ good.product.name }}">
+                        <img  class="productImageOrder" src="{% static 'images/default-product-item.png' %}" alt="{{ good.product.name }}">
                       {% endif %}
                     </div>
                     <div>
                       <div>Name: {{ good.product.name }}</div>
                       <div>Amount: {{ good.amount }}</div>
+                      {% if order.delivery_status == "delivered" %}
+                    <div class="star-rating">
+
+                          <span class="star star1" data-value="1" goods-id="{{ good.id }}">☆</span>
+                          <span class="star star2" data-value="2" goods-id="{{ good.id }}">☆</span>
+                          <span class="star star3" data-value="3" goods-id="{{ good.id }}">☆</span>
+                          <span class="star star4" data-value="4" goods-id="{{ good.id }}">☆</span>
+                          <span class="star star5" data-value="5" goods-id="{{ good.id }}">☆</span>
+
+                      </div>
+                    {% endif %}
                     </div>
                   </div>
-                  {% if order.delivery_status == "delivered" %}
-                    <input class="comment">
-                    <input class="stars">
-                  {% endif %}
                 </li>
+                </div>
+                <div>
+                   {% if order.delivery_status == "delivered" %}
+                     <div style="display: flex; flex-direction: column;" goods-id="{{ good.id }}" class="reviewDiv">
+                     <textarea class="reviewText" goods-id="{{ good.id }}"></textarea>
+                     <button class="sendComment" goods-id="{{ good.id }}">Send comment</button>
+                     </div>
+                  {% endif %}
+                </div>
+                </div>
+
               {% endfor %}
 
             </ul>

@@ -1718,3 +1718,49 @@ input[id$="-image"] {
   color: darkblue;
   margin-bottom: auto;
 }
+
+.star-rating {
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.star-rating span {
+  color: black;
+  transition: color 0.5s;
+}
+
+.star-rating span:hover {
+  color: gold;
+}
+
+.star-rating span:hover ~ span {
+  color: black;
+}
+
+.star-rating:hover span {
+  color: gold;
+}
+
+.reviewText{
+  height: 60px;
+  width: 200px;
+  margin-top: 10px;
+  padding: 5px;
+  margin-left: 5px;
+  border-radius: 15px;
+  border: 2px solid lightskyblue;
+}
+.sendComment{
+  width: 200px;
+  margin-top: 5px;
+  margin-left: 13px;
+  background-color: darkgreen;
+  border-radius: 15px;border: 2px solid white;
+  color: white;
+  font-family: 'Texturina', serif;
+}
+
+.sendComment:hover {
+  background-color: greenyellow;
+  color: black;
+}

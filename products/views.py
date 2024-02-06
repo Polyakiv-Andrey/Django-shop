@@ -96,12 +96,6 @@ class ProductCustomerList(generic.TemplateView):
         except EmptyPage:
             products = paginator.page(paginator.num_pages)
 
-        # product_attributes = {}
-
-        # for product in products:
-        #     attributes = ProductAttribute.objects.filter(product=product, title=False)
-        #     product_attributes[product.id] = {attr.name: [attr.value] for attr in attributes}
-
         context["products"] = products
-        # context["product_attributes"] = product_attributes
+
         return context
