@@ -93,3 +93,23 @@ class CommentProductView(View):
             review.comment = comment
             review.save()
             return JsonResponse({"status": "Success"})
+
+
+class GetAverageRateOfProduct(View):
+
+    def get(self, request, *args, **kwargs):
+        product_id = self.kwargs.get("product_id")
+        reviews = Reviews.objects.filter(product_id=product_id)
+        ratings = [review.rating for review in reviews if review.rating]
+        avg_rating = sum(ratings) / len(ratings) if ratings else 0
+        return JsonResponse({"avg_rating": avg_rating})
+
+
+class GetCommentAmountForProduct(View):
+
+    def get(self, request, *args, **kwargs):
+        product_id = self.kwargs.get("product_id")
+        reviews = Reviews.objects.filter(product_id=product_id)
+        comments = [review.comment for review in reviews if review.comment]
+        comments_amount = len(comments)
+        return JsonResponse({"comments_amount": comments_amount})

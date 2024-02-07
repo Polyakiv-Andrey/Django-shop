@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 from catalog.models import CatalogItem
 
@@ -13,6 +14,29 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+    @property
+    def get_discount_price(self):
+        discounts = self.discounts.all()
+        list_discounts = []
+        for discount in discounts:
+            if discount.start_date <= timezone.now() <= discount.end_date:
+                list_discounts.append(discount.percentage)
+        if not list_discounts:
+            return None
+        max_discount = max(list_discounts)
+        return float(self.price) * (100 - max_discount) / 100
+
+    @property
+    def get_discount(self):
+        discounts = self.discounts.all()
+        list_discounts = []
+        for discount in discounts:
+            if discount.start_date <= timezone.now() <= discount.end_date:
+                list_discounts.append(discount.percentage)
+        if not list_discounts:
+            return None
+        return int(max(list_discounts))
 
 
 class ProductAttribute(models.Model):

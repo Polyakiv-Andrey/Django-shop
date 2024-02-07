@@ -1,3 +1,5 @@
+from _decimal import Decimal
+
 from django.db import models
 
 from products.models import Product
@@ -12,6 +14,8 @@ class Goods(models.Model):
 
     @property
     def get_total(self):
+        if self.product.get_discount_price:
+            return self.amount * Decimal(self.product.get_discount_price)
         return self.amount * self.product.price
 
 

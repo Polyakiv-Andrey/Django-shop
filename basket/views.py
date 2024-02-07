@@ -1,6 +1,6 @@
 from django.db import transaction
-from django.http import JsonResponse
-from django.shortcuts import get_object_or_404, redirect
+from django.http import JsonResponse, HttpResponse
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views import generic
 from django.views.decorators.http import require_POST
 
@@ -44,13 +44,13 @@ class PlusItemFromBasketView(generic.View):
     def get(self, request, product_id):
         user = self.request.COOKIES.get("user_id")
         basket = Basket.objects.get(user_id=user)
-
+        response = redirect(request.META.get('HTTP_REFERER', '/'))
         with transaction.atomic():
             good = Goods.objects.get(basket=basket, product_id=product_id)
-            good.amount += 1
-            good.save()
-            response = redirect(request.META.get('HTTP_REFERER', '/'))
-            self.update_cookie(response, product_id)
+            if good.product.inventory < good.amount:
+                good.amount += 1
+                good.save()
+                self.update_cookie(response, product_id)
 
         return response
 

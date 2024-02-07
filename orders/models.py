@@ -28,3 +28,18 @@ class Order(models.Model):
     goods = models.ManyToManyField(Goods, related_name="order", blank=True)
     user_id = models.CharField()
     data_created = models.DateTimeField(auto_created=True, blank=True, null=True)
+
+    @property
+    def get_total_price(self):
+        transaction = self.payment.filter(transaction_status="success").first()
+        if transaction:
+            return self.payment.filter(transaction_status="success").first().amount
+        return None
+
+    @property
+    def get_currency(self):
+        transaction = self.payment.filter(transaction_status="success").first()
+        if transaction:
+            return self.payment.filter(transaction_status="success").first().currency
+        return None
+

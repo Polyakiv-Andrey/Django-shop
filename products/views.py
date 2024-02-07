@@ -3,6 +3,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
 from django.http import JsonResponse
 from django.template.loader import render_to_string
+from django.utils import timezone
 from django.views import generic
 from django.views.generic.edit import CreateView
 
@@ -71,7 +72,7 @@ class ProductCustomerList(generic.TemplateView):
     def get_context_data(self, **kwargs):
         context = super(ProductCustomerList, self).get_context_data(**kwargs)
         context["catalog_items"] = CatalogItem.objects.all()
-        products = Product.objects.all()
+        products = Product.objects.all().order_by('-inventory')
         filter_params = self.request.GET
         filter_q = Q()
         for key, value in filter_params.items():
@@ -86,7 +87,7 @@ class ProductCustomerList(generic.TemplateView):
         product_filter = self.request.GET.get("q")
         if product_filter:
             products = products.filter(name__icontains=product_filter)
-        paginator = Paginator(products, 25)
+        paginator = Paginator(products, 12)
         page = self.request.GET.get('page')
 
         try:

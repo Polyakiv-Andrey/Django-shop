@@ -21,12 +21,16 @@
     <div class="basketProductDescription">{{ prodact.product.description }}</div>
   </div>
   <div style="display: flex; flex-flow: column">
-    {% if prodact.product.inventory > prodact.amount %}
+    {% if prodact.product.inventory >= prodact.amount %}
       <div class="available" style="color: #4CAF50">Available</div>
     {% else %}
       <div class="available" style="color: red">Not enough stock available</div>
     {% endif %}
+    {% if  prodact.product.get_discount_price %}
+      <div class="basketProductPrice">Discount price: {{ prodact.product.get_discount_price }} $</div>
+    {% else %}
     <div class="basketProductPrice">Price: {{ prodact.product.price }} $</div>
+    {% endif %}
     <div class="basketProductPrice">Brand: {{ prodact.product.brand }}</div>
   </div>
 <div class="basketIconIn" style="display: flex">

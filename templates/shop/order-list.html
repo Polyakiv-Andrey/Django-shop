@@ -188,6 +188,9 @@ function getCSRFToken() {
               {{ order.delivery_info.street_address }}
               {{ order.delivery_info.postal_code }}
                <div>Data created: {{ order.data_created }}</div>
+              {% if order.get_total_price %}
+              <div>Total sum: {{ order.get_total_price }} {{ order.get_currency }}</div>
+              {% endif %}
               </div>
             </div>
         </div>

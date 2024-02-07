@@ -20,6 +20,69 @@ function updateCatalogId(catalogId) {
   window.location.href = updatedUrl;
 }
 </script>
+
+<script>
+
+$(document).ready(function() {
+    $('.starRatingList').each(function() {
+        var $starRatingList = $(this);
+        var productId = $starRatingList.data("product-id");
+
+        $.ajax({
+            url: '/reviews/get-avg-rating/' + productId + '/',
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                var avgRating = data.avg_rating;
+                console.log(data);
+
+                $starRatingList.find('span').each(function() {
+                    var ratingValue = $(this).data('value');
+
+                    $(this).css('background', 'none');
+                    $(this).css('color', 'black');
+
+                    if (ratingValue <= avgRating) {
+                        $(this).css('color', 'yellow');
+                    } else if (ratingValue - avgRating < 1) {
+                        var fillPercentage = (avgRating - Math.floor(avgRating)) * 100;
+                        $(this).css({
+                            'background': 'linear-gradient(to right, yellow ' + fillPercentage + '%, black ' + fillPercentage + '%)',
+                            '-webkit-background-clip': 'text',
+                            'color': 'transparent'
+                        });
+                    }
+                });
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+    });
+});
+
+$(document).ready(function() {
+    $('.commentIcon').each(function() {
+        var $commentIcon = $(this);
+        var productId = $commentIcon.data("product-id");
+
+        $.ajax({
+            url: '/reviews/get-comment-amount/' + productId + '/',
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                var commentsAmount = data.comments_amount;
+
+                $commentIcon.text(commentsAmount);
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+    });
+});
+
+     </script>
       {% if item.icon %}
         <img class="itemIcons" src="{{ item.icon.url }}" alt="{{ item.name }}">
         {% else %}

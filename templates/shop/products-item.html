@@ -1,8 +1,53 @@
-<div class="productCustomerContainer">
+{% load static %}
+{% load custom_filters %}
+
+<div class="productCustomerContainer" >
+    <div id="notification" class="notification"></div>
+{% if product.inventory <= 0 %}
+  <div class="overlay">
+  <div class="notAvailableNow">Not available now</div>
+  </div>
+{% endif %}
+<div class="imageContainerList">
+    {% if product.get_discount %}
+      <div class="discountProcentList"> - {{ product.get_discount }} % </div>
+    {% endif %}
+   {% for image in product.images.all %}
+    {% if image.main %}
+      <img class="productImageList" src="{{ image.image.url }}" alt="{{ product.name }}">
+    {% endif %}
+  {% empty %}
+    <img class="productImageList" src="{% static 'images/default-product-item.png' %}" alt="{{ product.name }}">
+  {% endfor %}
+  </div>
     <div class="flexBoxProduct">
-      {{ product.name }}
+      <div class="productNameList">Name: {{ product.name }}</div>
+      <div style="display: flex; align-self: flex-start; margin-left: 15px">
+         <div class="starRatingList"  data-product-id="{{ product.id }}">
+            <span class="starList star1List" data-value="1">☆</span>
+            <span class="starList star2List" data-value="2">☆</span>
+            <span class="starList star3List" data-value="3">☆</span>
+            <span class="starList star4List" data-value="4">☆</span>
+            <span class="starList star5List" data-value="5">☆</span>
+        </div>
+        <div>
+           <i class="fas fa-comment commentIcon" data-product-id="{{ product.id }}"></i>
+        </div>
+      </div>
+      <div class="priceProductList">
+        <span style="{% if product.get_discount_price %}text-decoration: line-through; color: red;{% endif %}">
+        Price: {{ product.price }}
+        </span>
+      </div>
+
+      {% if product.get_discount_price %}
+        <div class="discountList">
+          <span style="color: darkgreen"> Discount price: {{ product.get_discount_price }} </span>
+        </div>
+      {% endif %}
+
       <div class="productBasket">
-        <span class="plusBasket basketSymbol" data-product-id="{{ product.id }}" onclick="addToBasket(this)">+</span>
+        <span class="plusBasket basketSymbol" data-product-id="{{ product.id }}" onclick="addToBasket(this, {{ product.inventory }})">+</span>
         <i id="basket-{{ product.id }}" class="fas fa-shopping-basket"></i>
         <span class="minusBasket basketSymbol" data-product-id="{{ product.id }}" onclick="removeFromBasket(this)">-</span>
       </div>
@@ -10,15 +55,19 @@
 </div>
 
 <script>
-  function addToBasket(element) {
-    let productId = element.getAttribute('data-product-id');
-    let basket = document.getElementById(`basket-${productId}`);
-    let count = getBasketCount(productId);
-    count++;
-    basket.innerText = count;
-    setBasketCount(productId, count);
-    let mainBasket = document.getElementById("mainBasketIcon")
-      mainBasket.innerText++
+  function addToBasket(element, productInventory) {
+      let productId = element.getAttribute('data-product-id');
+      let basket = document.getElementById(`basket-${productId}`);
+      let count = getBasketCount(productId);
+      if (count < productInventory) {
+          count++;
+          basket.innerText = count;
+          setBasketCount(productId, count);
+          let mainBasket = document.getElementById("mainBasketIcon")
+          mainBasket.innerText++
+      } else {
+          showNotification("Insufficient stock!", false);
+      }
   }
 
   function removeFromBasket(element) {

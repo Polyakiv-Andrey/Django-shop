@@ -4,6 +4,7 @@ import stripe
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
+from django.utils import timezone
 from django.views import generic
 
 from basket.models import Basket
@@ -11,6 +12,8 @@ from django_shop import settings
 from django_shop.settings import STRIPE_PUBLIC_KEY
 from logistic.models import DeliveryDetail
 from orders.models import Order
+from payment.models import Payments
+from products.models import Product
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -57,6 +60,7 @@ class CreatePaymentAPIView(generic.View):
                 payment_method=payment_method_id,
                 return_url=request.build_absolute_uri(reverse('home')),
             )
+
         except stripe.error.CardError as e:
             return JsonResponse({'message': str(e)})
 
@@ -64,11 +68,23 @@ class CreatePaymentAPIView(generic.View):
             order = Order.objects.create(
                 delivery_status="created",
                 delivery_info=delivery_info,
-                user_id=user_id
+                user_id=user_id,
+                data_created=timezone.now()
+            )
+            Payments.objects.create(
+                amount=payment_amount // 100,
+                currency="usd",
+                delivery_ditail=delivery_info,
+                order=order,
+                transaction_status="success",
+                data_created=timezone.now()
             )
 
             for goods in basket.goods.all():
                 order.goods.add(goods)
+                product = Product.objects.get(goods=goods)
+                product.inventory -= goods.amount
+                product.save()
 
             order.save()
             basket.goods.clear()
