@@ -1,6 +1,6 @@
 from django.core.exceptions import FieldError
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.db.models import Q
+from django.db.models import Q, Case, When, F, DecimalField, IntegerField, Value, Avg
 from django.http import JsonResponse
 from django.template.loader import render_to_string
 from django.utils import timezone
@@ -73,20 +73,116 @@ class ProductCustomerList(generic.TemplateView):
         context = super(ProductCustomerList, self).get_context_data(**kwargs)
         context["catalog_items"] = CatalogItem.objects.all()
         products = Product.objects.all().order_by('-inventory')
+        context["brands"] = {product.brand for product in products if product.brand}
+        prices = [
+            product.price
+            if product.get_discount_price is None
+            else product.get_discount_price
+            for product in products
+        ]
+        if not prices:
+            prices = [0]
+        context["min_price"] = min(prices)
+        context["max_price"] = max(prices)
         filter_params = self.request.GET
         filter_q = Q()
         for key, value in filter_params.items():
-            if key == "q":
+
+            if key in [
+                "q", 'price__gte', 'price__lte',
+                "has_discount", "has_comments", "is_top",
+                "ordering"
+            ]:
                 continue
             filter_q &= Q(**{key: value})
+            print(filter_q)
             try:
                 products = products.filter(filter_q)
             except FieldError as e:
                 print(e)
                 continue
+        ordering = self.request.GET.get('ordering', None)
+        if ordering:
+            if ordering == "toMaxPrice":
+                products = Product.objects.annotate(
+                    current_price=Case(
+                        When(
+                            discounts__start_date__lte=timezone.now(),
+                            discounts__end_date__gte=timezone.now(),
+                            then=F('price') * (100 - F('discounts__percentage')) / 100
+                        ),
+                        default='price',
+                        output_field=DecimalField(max_digits=10, decimal_places=2)
+                    ),
+                    inventory_order=Case(
+                        When(inventory__lte=0, then=Value(1)),
+                        default=Value(0),
+                        output_field=IntegerField()
+                    )
+                ).order_by('inventory_order', 'current_price')
+            if ordering == "toMinPrice":
+                products = Product.objects.annotate(
+                    current_price=Case(
+                        When(
+                            discounts__start_date__lte=timezone.now(),
+                            discounts__end_date__gte=timezone.now(),
+                            then=F('price') * (100 - F('discounts__percentage')) / 100
+                        ),
+                        default='price',
+                        output_field=DecimalField(max_digits=10, decimal_places=2)
+                    ),
+                    inventory_order=Case(
+                        When(inventory__lte=0, then=Value(1)),
+                        default=Value(0),
+                        output_field=IntegerField()
+                    )
+                ).order_by('inventory_order', '-current_price')
+
+            if ordering == "byRating":
+                products = Product.objects.annotate(
+                    average_rating=Avg('reviews__rating'),
+                    has_rating=Case(
+                        When(average_rating__isnull=True, then=Value(1)),
+                        default=Value(0),
+                        output_field=IntegerField()
+                    ),
+                    inventory_order = Case(
+                        When(inventory__lte=0, then=Value(1)),
+                        default=Value(0),
+                        output_field=IntegerField()
+                    )
+                ).order_by('inventory_order', 'has_rating', '-average_rating')
+        exclude_ids = []
+        has_comments = self.request.GET.get('has_comments', None)
+        has_discount = self.request.GET.get('has_discount', None)
+        price_gte = self.request.GET.get('price__gte', None)
+        price_lte = self.request.GET.get('price__lte', None)
+        is_top = self.request.GET.get('is_top',  None)
+        for product in products:
+            price = product.price if product.get_discount_price is None else product.get_discount_price
+            if price_gte:
+                if price < int(price_gte):
+                    exclude_ids.append(product.id)
+                    continue
+            if price_lte:
+                if price > int(price_lte):
+                    exclude_ids.append(product.id)
+            if has_discount:
+                if product.has_discount is False:
+                    exclude_ids.append(product.id)
+            if has_comments:
+                if product.has_comments is False:
+                    exclude_ids.append(product.id)
+            if is_top:
+                if product.is_top is False:
+                    exclude_ids.append(product.id)
+
+        products = products.exclude(id__in=exclude_ids)
+
         product_filter = self.request.GET.get("q")
         if product_filter:
             products = products.filter(name__icontains=product_filter)
+
         paginator = Paginator(products, 12)
         page = self.request.GET.get('page')
 

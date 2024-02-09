@@ -16,6 +16,38 @@ class Product(models.Model):
         return self.name
 
     @property
+    def is_top(self):
+        marks = []
+        reviews = self.reviews.all()
+        for review in reviews:
+            if review.rating:
+                marks.append(review.rating)
+        if len(marks) == 0:
+            return False
+        if sum(marks) / len(marks) >= 4:
+            return True
+        return False
+
+
+    @property
+    def has_comments(self):
+        reviews = self.reviews.all()
+        for review in reviews:
+            if review.comment:
+                return True
+        return False
+
+    @property
+    def has_discount(self):
+        discounts = self.discounts.all()
+        if discounts:
+            for discount in discounts:
+                if discount.start_date < timezone.now() < discount.end_date:
+                    return True
+        return False
+
+
+    @property
     def get_discount_price(self):
         discounts = self.discounts.all()
         list_discounts = []
@@ -25,7 +57,7 @@ class Product(models.Model):
         if not list_discounts:
             return None
         max_discount = max(list_discounts)
-        return float(self.price) * (100 - max_discount) / 100
+        return float(self.price) * (100 - max_discount) // 100
 
     @property
     def get_discount(self):
