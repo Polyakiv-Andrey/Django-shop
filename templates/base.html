@@ -29,3 +29,29 @@
   {% include 'includes/footer.html' %}
 </body>
 </html>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const adminCookie = getCookiey("admin");
+    console.log(adminCookie)
+    var mainHeader = document.getElementById("main-header");
+    var adminHeader = document.getElementById("admin-header");
+
+        if (adminCookie === "true") {
+             mainHeader.style.display = "none";
+            adminHeader.style.display = "block";
+         } else {
+             mainHeader.style.display = "block";
+            adminHeader.style.display = "none";
+        }
+
+});
+  function getCookiey(name) {
+    const nameEQ = name + "=";
+    const ca = document.cookie.split(';');
+    for(let i = 0; i < ca.length; i++) {
+        let c = ca[i].trim();
+        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length);
+    }
+    return null;
+}
+</script>

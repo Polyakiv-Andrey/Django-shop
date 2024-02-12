@@ -140,7 +140,7 @@
     {% for properys in product.attributes.all %}
       <tr>
         {% if properys.title == True %}
-          <td colspan="2" style="width: 100%; text-align: center; background: white">{{ properys.name }}</td>
+          <td colspan="2" style="width: 100%; text-align: center; background: green">{{ properys.name }}</td>
         {% else %}
           <td>{{ properys.name }}</td>
           <td>{{ properys.value }}</td>

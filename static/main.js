@@ -6,9 +6,11 @@ function toggleHeaders() {
   if (mainHeader.style.display === "none") {
     mainHeader.style.display = "block";
     adminHeader.style.display = "none";
+    document.cookie = "admin=false; path=/";
   } else {
     mainHeader.style.display = "none";
     adminHeader.style.display = "block";
+    document.cookie = "admin=true; path=/";
   }
 }
 
@@ -47,6 +49,7 @@ function toggleAdminMenu() {
     var admin = document.querySelector(".admin-button-panel");
     var icon =document.querySelector(".burger");
     if (navigation.style.display === "block") {
+        document.cookie = "admin=false; path=/";
         navigation.style.display = "none";
         if (logo) logo.style.display = "block";
         if (companyName) companyName.style.display = "block";
@@ -54,6 +57,7 @@ function toggleAdminMenu() {
         icon.classList.remove('fa-arrow-right');
         icon.classList.add('fa-bars');
     } else {
+        document.cookie = "admin=true; path=/";
         navigation.style.display = "block";
         if (logo) logo.style.display = "none";
         if (companyName) companyName.style.display = "none";
