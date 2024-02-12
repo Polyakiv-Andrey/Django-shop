@@ -1,14 +1,21 @@
 {% load static %}
 {% load custom_filters %}
 
-<div class="productCustomerContainer" >
+<div class="productCustomerContainer">
+<script>
+    document.querySelectorAll('.imageContainerList').forEach(item => {
+        item.addEventListener('click', function() {
+            window.location.href = this.getAttribute('data-url');
+        });
+    });
+</script>
     <div id="notification" class="notification"></div>
 {% if product.inventory <= 0 %}
   <div class="overlay">
   <div class="notAvailableNow">Not available now</div>
   </div>
 {% endif %}
-<div class="imageContainerList">
+<div class="imageContainerList" data-url="{% url 'products:product_detail' product.id %}">
     {% if product.get_discount %}
       <div class="discountProcentList"> - {{ product.get_discount }} % </div>
     {% endif %}

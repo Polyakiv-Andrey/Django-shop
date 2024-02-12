@@ -1,0 +1,207 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+  <div style="display: flex">
+
+  <div>
+    {% for image in product.images.all %}
+      {% if image.main %}
+        <img class="productImageDitail" src="{{ image.image.url }}" alt="{{ product.name }}">
+      {% endif %}
+    {% empty %}
+      <img class="productImageDitail" src="{% static 'images/default-product-item.png' %}" alt="{{ product.name }}">
+    {% endfor %}
+  </div>
+  <div style="display: flex; flex-direction: column">
+  <div style="display: flex">
+
+  <div class="ditailInfProduct">
+
+    <div class="ditailInfProductName">
+      {{ product.name }}
+    </div>
+    <div class="prodDitail" {% if product.get_discount_price %}
+      style="color: red; text-decoration: line-through;"
+      {% else %} style="color: green;" {% endif %}
+    >Price: {{ product.price }}
+    </div>
+  <div class="prodDitail" {% if product.get_discount_price %}
+      style="color: green;"
+      {% else %} style="display: none;" {% endif %}
+    >Discount price: {{ product.get_discount_price }}
+    </div>
+  <div style="display: flex">
+    <div class="prodDitail">Inventory: {{ product.inventory }}</div>
+
+    <div class="productBasket productBasketDitailPage">
+        <span class="plusBasket basketSymbol" data-product-id="{{ product.id }}" onclick="addToBasket(this, {{ product.inventory }})">+</span>
+        <i id="basket-{{ product.id }}" class="fas fa-shopping-basket"></i>
+        <span class="minusBasket basketSymbol" data-product-id="{{ product.id }}" onclick="removeFromBasket(this)">-</span>
+      </div>
+    <script>
+  function addToBasket(element, productInventory) {
+      let productId = element.getAttribute('data-product-id');
+      let basket = document.getElementById(`basket-${productId}`);
+      let count = getBasketCount(productId);
+      if (count < productInventory) {
+          count++;
+          basket.innerText = count;
+          setBasketCount(productId, count);
+          let mainBasket = document.getElementById("mainBasketIcon")
+          mainBasket.innerText++
+      } else {
+          showNotification("Insufficient stock!", false);
+      }
+  }
+
+  function removeFromBasket(element) {
+    let productId = element.getAttribute('data-product-id');
+    let basket = document.getElementById(`basket-${productId}`);
+    let count = getBasketCount(productId);
+    if (count > 0) {
+      count--;
+      basket.innerText = count;
+      setBasketCount(productId, count);
+      let mainBasket = document.getElementById("mainBasketIcon")
+      mainBasket.innerText--
+    }
+  }
+
+  function setBasketCount(productId, count) {
+    if (count === 0) {
+      document.cookie = `basket_${productId}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
+    } else {
+      document.cookie = `basket_${productId}=${count}; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/`;
+    }
+  }
+
+  function getBasketCount(productId) {
+    let name = `basket_${productId}=`;
+    let decodedCookie = decodeURIComponent(document.cookie);
+    let cookieArray = decodedCookie.split(';');
+    for (let i = 0; i < cookieArray.length; i++) {
+      let cookie = cookieArray[i].trim();
+      if (cookie.indexOf(name) === 0) {
+        return parseInt(cookie.substring(name.length)) || 0;
+      }
+    }
+    return 0;
+  }
+
+  window.onload = function() {
+    let productIds = Array.from(document.querySelectorAll('.plusBasket, .minusBasket')).map(element => element.getAttribute('data-product-id'));
+    productIds.forEach(productId => {
+      let basket = document.getElementById(`basket-${productId}`);
+      let count = getBasketCount(productId);
+      basket.innerText = count;
+    });
+  };
+</script>
+  </div>
+    <div class="prodDitail">Brand: {{ product.brand }}</div>
+    <div style="display: flex">
+      <div class="prodDitail">Rating:</div>
+      <div class="starRatingList prodDitail"  data-product-id="{{ product.id }}">
+            <span class="starList star1List" data-value="1">☆</span>
+            <span class="starList star2List" data-value="2">☆</span>
+            <span class="starList star3List" data-value="3">☆</span>
+            <span class="starList star4List" data-value="4">☆</span>
+            <span class="starList star5List" data-value="5">☆</span>
+
+</div>
+      </div>
+  </div>
+  <div class="ditailInfProduct" style="margin-left: 3vw;">
+    <div class="ditailInfProductName">Description</div>
+    <textarea class="descriptionText" disabled="true">{{ product.description }}</textarea>
+  </div>
+  </div>
+  <div class="imagesContainer">
+   {% for image in product.images.all %}
+     {% if image.main == True %}
+        <img class="productImagesDitail" style="border: 5px solid green" src="{{ image.image.url }}" alt="{{ product.name }}">
+     {% else %}
+       <img class="productImagesDitail" src="{{ image.image.url }}" alt="{{ product.name }}">
+     {% endif %}
+    {% empty %}
+      <img class="productImagesDitail" style="border: 5px solid green" src="{% static 'images/default-product-item.png' %}" alt="{{ product.name }}">
+  {% endfor %}
+  </div>
+
+  </div>
+  </div>
+    <div style="display: flex">
+    <div class="productPropertyTable">
+      <h2 id="productPropertyTitle"> Product property </h2>
+
+      <table>
+  <tbody>
+    {% for properys in product.attributes.all %}
+      <tr>
+        {% if properys.title == True %}
+          <td colspan="2" style="width: 100%; text-align: center; background: white">{{ properys.name }}</td>
+        {% else %}
+          <td>{{ properys.name }}</td>
+          <td>{{ properys.value }}</td>
+        {% endif %}
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+    </div>
+    <div class="productCommentsTable">
+      <h2 id="productPropertyTitle"> Comments </h2>
+      <div class="commentsSpace" style="height: {{ product.get_comments_height }}px; overflow-y: auto;">
+        {% for review in product.reviews.all %}
+          <div class="commentOne">
+          <div class="commentReviewer">{{ review.get_reviewer }}</div>
+          <div class="reviewComment">{{ review }}</div>
+          <div class="reviewDate">{{ review.get_date }}</div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+    </div>
+
+
+  <script>
+  $(document).ready(function() {
+    $('.starRatingList').each(function() {
+        var $starRatingList = $(this);
+        var productId = $starRatingList.data("product-id");
+
+        $.ajax({
+            url: '/reviews/get-avg-rating/' + productId + '/',
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                var avgRating = data.avg_rating;
+
+                $starRatingList.find('span').each(function() {
+                    var ratingValue = $(this).data('value');
+
+                    $(this).css('background', 'none');
+                    $(this).css('color', 'black');
+
+                    if (ratingValue <= avgRating) {
+                        $(this).css('color', 'yellow');
+                    } else if (ratingValue - avgRating < 1) {
+                        var fillPercentage = (avgRating - Math.floor(avgRating)) * 100;
+                        $(this).css({
+                            'background': 'linear-gradient(to right, yellow ' + fillPercentage + '%, black ' + fillPercentage + '%)',
+                            '-webkit-background-clip': 'text',
+                            'color': 'transparent'
+                        });
+                    }
+                });
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+    });
+});
+  </script>
+{% endblock %}

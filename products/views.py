@@ -2,6 +2,7 @@ from django.core.exceptions import FieldError
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q, Case, When, F, DecimalField, IntegerField, Value, Avg
 from django.http import JsonResponse
+from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
 from django.utils import timezone
 from django.views import generic
@@ -61,9 +62,13 @@ class CreateProductView(CreateView):
         return JsonResponse({'status': 'error', 'errors': form.errors}, status=400)
 
 
-class ProductDitailView(generic.DetailView):
-    model = Product
-    template_name = "adminPanel/products/product-detail.html"
+class ProductDitailView(generic.View):
+    template_name = "shop/product-detail.html"
+
+    def get(self, requests, *args, **kwargs):
+        product = get_object_or_404(Product, id=kwargs.get("pk"))
+        context = {"product": product}
+        return render(template_name=self.template_name, request=requests, context=context)
 
 
 class ProductCustomerList(generic.TemplateView):

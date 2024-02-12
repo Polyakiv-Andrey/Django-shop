@@ -1,5 +1,278 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-  <h1>Hi fif</h1>
+  <form method="post" action="{% url "admin-panel:delete-product" product.id %}">
+    {% csrf_token %}
+    <button type="submit" class="discount-form-submit delete-product">Delete</button>
+  </form>
+  <form method="post" action="{% url 'admin-panel:product-detail' product.id %}" >
+  {% csrf_token %}
+  <div style="display: flex">
+
+  <div>
+    {% for image in product.images.all %}
+      {% if image.main %}
+        <img class="productImageDitail" src="{{ image.image.url }}" alt="{{ product.name }}">
+      {% endif %}
+    {% empty %}
+      <img class="productImageDitail" src="{% static 'images/default-product-item.png' %}" alt="{{ product.name }}">
+    {% endfor %}
+  </div>
+  <div style="display: flex; flex-direction: column">
+  <div style="display: flex">
+
+  <div class="ditailInfProduct">
+
+    <div class="ditailInfProductName" style="display: flex; align-items: center; margin-top: 10px; margin-left: 10px">
+      <input class="ditailInfProductName" name="name" value="{{ product.name }}" style="flex-grow: 1; border-radius: 20px;">
+      <button type="submit" class="edit-button save-button"></button>
+    </div>
+
+    <div class="prodDitail" {% if product.get_discount_price %}
+      style="color: red; text-decoration: line-through;"
+      {% else %} style="color: green;" {% endif %}
+    ><span style="margin-right: 10px">Price: </span> <input class="priceInput" name="price" value="{{ product.price }}" style="flex-grow: 1;">
+      <button type="submit" class="edit-button save-button"></button>
+    </div>
+  <div class="prodDitail" {% if product.get_discount_price %}
+      style="color: green;"
+      {% else %} style="display: none;" {% endif %}
+    >Discount price: {{ product.get_discount_price }}
+    </div>
+  <div style="display: flex">
+    <div class="prodDitail"><span style="margin-right: 10px">Inventory: </span> <input class="priceInput" name="inventory" value="{{ product.inventory }}" style="flex-grow: 1; border-radius: 20px;">
+      <button type="submit" class="edit-button save-button"></button></div>
+
+  </div>
+    <div class="prodDitail"><span style="margin-right: 10px">Brand:</span> <input class="priceInput" name="brand" value="{{ product.brand }}" style="flex-grow: 1; border-radius: 20px;">
+      <button type="submit" class="edit-button save-button"></button></div>
+    <div style="display: flex">
+      <div class="prodDitail">Rating:</div>
+      <div class="starRatingList prodDitail"  data-product-id="{{ product.id }}">
+            <span class="starList star1List" data-value="1">☆</span>
+            <span class="starList star2List" data-value="2">☆</span>
+            <span class="starList star3List" data-value="3">☆</span>
+            <span class="starList star4List" data-value="4">☆</span>
+            <span class="starList star5List" data-value="5">☆</span>
+
+</div>
+      </div>
+  </div>
+  <div class="ditailInfProduct" style="margin-left: 3vw;">
+    <div class="ditailInfProductName">Description</div>
+    <textarea class="descriptionText" name="description">{{ product.description }}</textarea>
+     <button type="submit" class="edit-button save-button"></button>
+  </div>
+  </div>
+ </form>
+  <div class="imagesContainer">
+   {% for image in product.images.all %}
+     <div class="image-container">
+     {% if image.main == True %}
+        <img class="productImagesDitail" style="border: 5px solid green" src="{{ image.image.url }}" alt="{{ product.name }}">
+     {% else %}
+       <img class="productImagesDitail" src="{{ image.image.url }}" alt="{{ product.name }}">
+     {% endif %}
+     {% if image.main == True %}
+     {% else %}
+       <form method="post" action="{% url 'admin-panel:delete-photo' image.id %}">
+       {% csrf_token %}
+      <button class="delete-image-btn" action="submit">🗑️</button>
+       </form>
+     {% endif %}
+     <form method="post" action="{% url 'admin-panel:main-photo' image.id %}">
+     {% csrf_token %}
+     {% if image.main == True %}
+      <button class="set-main-image-btn" style="background-color: yellow; right: 24px" action="submit">★</button>
+     {% else %}
+      <button class="set-main-image-btn" action="submit">★</button>
+     {% endif %}
+     </form>
+    </div>
+  {% endfor %}
+    <form>
+      {% csrf_token %}
+    <div class="productImagesDitail create-image">
+      <input name="image" class="inputProductImage" style="display: none" type="file">
+    </div>
+    </form>
+<script>
+document.querySelector('.create-image').addEventListener('click', function() {
+    event.stopPropagation();
+  document.querySelector('.inputProductImage').click();
+});
+
+document.querySelector('.inputProductImage').addEventListener('change', function(event) {
+  const file = event.target.files[0];
+  if (file) {
+    const formData = new FormData();
+    formData.append('image', file);
+
+    const uploadURL = "{% url 'admin-panel:create-photo' pk=product.pk %}";
+
+    fetch(uploadURL, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+      },
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Success:', data);
+      window.location.reload();
+    })
+    .catch(error => {
+      console.error('Failed:', error);
+      window.location.reload();
+    });
+  }
+});
+</script>
+  </div>
+
+  </div>
+  </div>
+
+  </form>
+
+    <div style="display: flex">
+    <div class="productPropertyTable">
+      <h2 id="productPropertyTitle"> Product property </h2>
+
+      <table>
+      <thead>
+    <tr>
+      <th>Name</th>
+      <th>Value</th>
+      <th style="width: 30px">Title</th>
+      <th style="width: 30px">Save</th>
+      <th style="width: 30px">Up</th>
+      <th style="width: 30px">Down</th>
+      <th style="width: 30px">Delete</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for properys in product.attributes.all %}
+      <tr>
+      <div id="property{{ properys.id }}">
+          <form method="post" action="{% url 'admin-panel:update-property' properys.id %}">
+            {% csrf_token %}
+          <td><input style="width: 95%" name="name" value="{{ properys.name }}"></td>
+          <td><input style="width: 95%" name="value" value="{{ properys.value }}"></td>
+          <td><input name="title" type="checkbox" {% if properys.title == True %}  checked="checked" {% endif %}></td>
+          <td>
+
+              <button type="submit">&#128190;</button>
+
+          </td>
+         </form>
+      </div>
+          <td>
+            <form method="post" action="{% url "admin-panel:move-up-property" properys.id %}">
+            {% csrf_token %}
+              <button type="submit">&#11014;</button>
+            </form>
+          </td>
+           <td>
+            <form method="post" action="{% url "admin-panel:move-down-property" properys.id %}">
+            {% csrf_token %}
+              <button type="submit">&#11015;</button>
+            </form>
+          </td>
+          <td>
+            <form method="post" action="{% url "admin-panel:delete-property" properys.id %}">
+            {% csrf_token %}
+              <button type="submit">&#10060;</button>
+            </form>
+          </td>
+
+
+
+      </tr>
+    {% endfor %}
+    <div id="createPropertyProd">
+  <form method="post" action="{% url 'admin-panel:create-property' product.id %}">
+  {% csrf_token %}
+    <td><input style="width: 95%" name="name" minlength="1"></td>
+    <td><input style="width: 95%" name="value"></td>
+    <td><input name="title" type="checkbox" {% if properys.title == True %}  checked="checked" {% endif %}></td>
+    <td colspan="4">
+
+        <button style="margin-left: 85px" type="submit">&#128190;</button>
+
+    </td>
+  </form>
+    </div>
+  </tbody>
+</table>
+
+    </div>
+    <div class="productCommentsTable" style="font-family: 'Texturina', serif">
+      <h2 id="productPropertyTitle"> Discount </h2>
+
+      <form method="post" action="{% url 'admin-panel:discount' product.id %}" class="discount-form-container">
+        {% csrf_token %}
+        <div class="discount-form-group">
+            <label class="discount-form-label">Percentage:</label>
+            <input type="number" name="percentage" value="{{ product.get_discount }}" min="0" max="99" class="discount-form-input">
+        </div>
+        <div class="discount-form-group">
+            <label class="form-label">Start date:</label>
+            <input type="date" name="start_date" value="{{ product.get_discount_start_date }}" class="discount-form-input">
+        </div>
+        <div class="discount-form-group">
+            <label class="discount-form-label">End date:</label>
+            <input type="date" name="end_date" value="{{ product.get_discount_end_date }}" class="discount-form-input">
+        </div>
+        <button type="submit" class="discount-form-submit">Submit</button>
+    </form>
+      <form method="post" action="{% url 'admin-panel:delete-discount' product.id %}">
+          {% csrf_token %}
+          <button type="submit" class="discount-form-submit delete-discount">Delete</button>
+        </form>
+
+    </div>
+    </div>
+
+
+  <script>
+  $(document).ready(function() {
+    $('.starRatingList').each(function() {
+        var $starRatingList = $(this);
+        var productId = $starRatingList.data("product-id");
+
+        $.ajax({
+            url: '/reviews/get-avg-rating/' + productId + '/',
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                var avgRating = data.avg_rating;
+
+                $starRatingList.find('span').each(function() {
+                    var ratingValue = $(this).data('value');
+
+                    $(this).css('background', 'none');
+                    $(this).css('color', 'black');
+
+                    if (ratingValue <= avgRating) {
+                        $(this).css('color', 'yellow');
+                    } else if (ratingValue - avgRating < 1) {
+                        var fillPercentage = (avgRating - Math.floor(avgRating)) * 100;
+                        $(this).css({
+                            'background': 'linear-gradient(to right, yellow ' + fillPercentage + '%, black ' + fillPercentage + '%)',
+                            '-webkit-background-clip': 'text',
+                            'color': 'transparent'
+                        });
+                    }
+                });
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+    });
+});
+  </script>
 {% endblock %}

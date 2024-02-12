@@ -1,6 +1,6 @@
 {% load static %}
 
-<div class="catalog-item productDetail" data-url="{% url 'products:product_detail' product.id %}">
+<div class="catalog-item productDetail" data-url="{% url 'admin-panel:product-detail' product.id %}">
   <div class="catalog-image-container">
 <script>
     document.querySelectorAll('.productDetail').forEach(item => {

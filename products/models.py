@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import models
 from django.utils import timezone
 
@@ -70,6 +72,24 @@ class Product(models.Model):
             return None
         return int(max(list_discounts))
 
+    @property
+    def get_comments_height(self):
+        return self.attributes.all().count() * 40
+
+    @property
+    def get_discount_end_date(self):
+        discount = self.discounts.all().first()
+        if discount:
+            return discount.end_date.strftime('%Y-%m-%d') if discount.end_date else None
+        return None
+
+    @property
+    def get_discount_start_date(self):
+        discount = self.discounts.all().first()
+        if discount:
+            return discount.start_date.strftime('%Y-%m-%d') if discount.start_date else None
+        return None
+
 
 class ProductAttribute(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='attributes')
@@ -80,12 +100,19 @@ class ProductAttribute(models.Model):
     def __str__(self):
         return f"{self.name}: {self.value}"
 
+    class Meta:
+        ordering = ['id']
+
+
+def default_end_date():
+    return datetime.datetime(9999, 1, 30)
+
 
 class Discount(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='discounts')
     percentage = models.FloatField()
-    start_date = models.DateTimeField()
-    end_date = models.DateTimeField()
+    start_date = models.DateTimeField(default=timezone.now)
+    end_date = models.DateTimeField(default=default_end_date)
 
     def __str__(self):
         return self.percentage
@@ -99,5 +126,8 @@ class ProductImages(models.Model):
     main = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.image
+        return self.image.url
+
+    class Meta:
+        ordering = ['-main', 'id']
 
