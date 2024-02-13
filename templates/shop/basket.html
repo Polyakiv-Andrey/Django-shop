@@ -27,9 +27,9 @@
       <div class="available" style="color: red">Not enough stock available</div>
     {% endif %}
     {% if  prodact.product.get_discount_price %}
-      <div class="basketProductPrice">Discount price: {{ prodact.product.get_discount_price }} $</div>
+      <div class="basketProductPrice">Discount price: {{ prodact.product.get_discount_price }} {{ site.get_currency_display }}</div>
     {% else %}
-    <div class="basketProductPrice">Price: {{ prodact.product.price }} $</div>
+    <div class="basketProductPrice">Price: {{ prodact.product.price }} {{ site.get_currency_display }}</div>
     {% endif %}
     <div class="basketProductPrice">Brand: {{ prodact.product.brand }}</div>
   </div>
@@ -43,7 +43,7 @@
       data-update-url="{% url 'basket:minus_basket' prodact.product.id %}"
       onclick="window.location.href = this.getAttribute('data-update-url');">-</span>
 </div>
-  <div class="itemSum">Total:  {{ prodact.get_total|floatformat:"2" }}</div>
+  <div class="itemSum">Total:  {{ prodact.get_total|floatformat:"2" }} {{ site.get_currency_display }}</div>
  <form action="{% url 'basket:delete-item' prodact.product.id %}" method="post" style="display: inline;">
     {% csrf_token %}
     <button type="submit" class="delete-button" title="delete"></button>
@@ -66,7 +66,7 @@
     }
 </script>
     <div>
-    <div class="totalPrice">Total: {{ basket.get_basket_total_price|floatformat:"2" }}</div>
+    <div class="totalPrice">Total: {{ basket.get_basket_total_price|floatformat:"2" }} {{ site.get_currency_display }}</div>
     </div>
   {% endif %}
 

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+  <div class="aboutUsContainer">
+    <div class="aboutUsImageContainer">
+      <img class="ShopImage"
+           {% if site.about_us_image %}
+           src="{{ site.about_us_image.url }}"
+           {% else %}
+           src="{% static 'images/shop-preview.png' %}"
+           {% endif %}
+      >
+    </div>
+    <div class="aboutUsContentContainer">
+      <div class="aboutUsTitleContainer">
+        <h1 class="titleAboutUs">
+          {% if site.about_us_title and site.about_us_title != "None"  %}
+            {{ site.about_us_title }}
+          {% else %}
+            Title
+          {% endif %}
+        </h1>
+      </div>
+      <div class="aboutUsDescriptionContainer">
+        <p>
+          {% if site.about_us_description and site.about_us_description != "None"  %}
+            {{ site.about_us_description }}
+          {% else %}
+            Pharetra sit amet aliquam id diam maecenas ultricies mi eget mauris pharetra et ultrices neque ornare aenean euismod elementum nisi quis eleifend quam adipiscing vitae proin sagittis nisl rhoncus mattis rhoncus urna neque viverra justo nec ultrices dui sapien eget mi p            Pharetra sit amet aliquam id diam maecenas ultricies mi eget mauris pharetra et ultrices neque ornare aenean euismod elementum nisi quis eleifend quam adipiscing vitae proin sagittis nisl rhoncus mattis rhoncus urna neque viverra justo nec ultrices dui sapien eget mi p             Pharetra sit amet aliquam id diam maecenas ultricies mi eget mauris pharetra et ultrices neque ornare aenean euismod elementum nisi quis eleifend quam adipiscing vitae proin sagittis nisl rhoncus mattis rhoncus urna neque viverra justo nec ultrices dui sapien eget mi p            Pharetra sit amet aliquam id diam maecenas ultricies mi eget mauris pharetra et ultrices neque ornare aenean euismod elementum nisi quis eleifend quam adipiscing vitae proin sagittis nisl rhoncus mattis rhoncus urna neque viverra justo nec ultrices dui sapien eget mi p
+
+
+          {% endif %}
+        </p>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div>
+  <h1 id="siteInfoEdit">Site information</h1>
+
+    <form method="post" action="{% url 'site_detail:edit-site-info' %}" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="siteEditInfo">
+      <div class="siteEditInfoDiv" style="display: flex">
+        <div style="text-align: left">Site name:</div>
+        <input class="siteEditInfoInput" name="site_name" value="{{ site.site_name }}">
+        <button class="siteEditInfoButton" type="submit">&#128190;</button>
+      </div>
+      <div class="siteEditInfoDiv" style="display: flex">
+        <div style="text-align: left">Logo:</div>
+        <input class="siteEditInfoInput" type="file" name="logo"  {% if site.logo %} value="{{ site.logo.url }}" {% endif %}>
+        <button class="siteEditInfoButton" type="submit">&#128190;</button>
+      </div>
+      <div class="siteEditInfoDiv" style="display: flex">
+        <div style="text-align: left" >Currency:</div>
+          <select class="siteEditInfoInput" name="currency" value="{{ site.currency }}">
+            <option value="uan" {% if site.currency == "uan" %}selected{% endif %}>₴ - UAN</option>
+            <option value="usd" {% if site.currency == "usd" %}selected{% endif %}>$ - USD</option>
+            <option value="euro" {% if site.currency == "euro" %}selected{% endif %}>€ - EURO</option>
+          </select>
+         <button class="siteEditInfoButton" type="submit">&#128190;</button>
+      </div>
+      <div class="siteEditInfoDiv" style="display: flex">
+        <div style="text-align: left">Email:</div>
+        <input class="siteEditInfoInput" name="email" value="{{ site.email }}">
+        <button class="siteEditInfoButton" type="submit">&#128190;</button>
+      </div>
+      <div class="siteEditInfoDiv" style="display: flex">
+        <div style="text-align: left">Stripe public key:</div>
+        <input class="siteEditInfoInput" name="stripe_public_key" value="{{ site.stripe_public_key }}">
+        <button class="siteEditInfoButton" type="submit">&#128190;</button>
+      </div>
+      <div class="siteEditInfoDiv" style="display: flex">
+        <div style="text-align: left">Stripe private key:</div>
+        <input class="siteEditInfoInput" name="stripe_private_key" value="{{ site.stripe_private_key }}">
+        <button class="siteEditInfoButton" type="submit">&#128190;</button>
+      </div>
+
+      <div class="siteEditInfoDiv" style="display: flex">
+        <div style="text-align: left">About us title:</div>
+        <input class="siteEditInfoInput" name="about_us_title" value="{{ site.about_us_title }}">
+        <button class="siteEditInfoButton" type="submit">&#128190;</button>
+      </div>
+      <div class="siteEditInfoDiv" style="display: flex">
+        <div style="text-align: left">About us description:</div>
+        <textarea class="siteEditInfoInput" name="about_us_description" value="{{ site.about_us_description }}"></textarea>
+        <button class="siteEditInfoButton" type="submit">&#128190;</button>
+      </div>
+      <div class="siteEditInfoDiv" style="display: flex">
+        <div style="text-align: left">About us image:</div>
+        <input class="siteEditInfoInput" type="file" name="about_us_image" {% if site.about_us_image %} value="{{ site.about_us_image.url }}"{% endif %}>
+        <button class="siteEditInfoButton" type="submit">&#128190;</button>
+      </div>
+</div>
+    </form>
+  </div>
+{% endblock %}

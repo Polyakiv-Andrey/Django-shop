@@ -24,12 +24,12 @@
     <div class="prodDitail" {% if product.get_discount_price %}
       style="color: red; text-decoration: line-through;"
       {% else %} style="color: green;" {% endif %}
-    >Price: {{ product.price }}
+    >Price: {{ product.price }} {{ site.get_currency_display }}
     </div>
   <div class="prodDitail" {% if product.get_discount_price %}
       style="color: green;"
       {% else %} style="display: none;" {% endif %}
-    >Discount price: {{ product.get_discount_price }}
+    >Discount price: {{ product.get_discount_price }} {{ site.get_currency_display }}
     </div>
   <div style="display: flex">
     <div class="prodDitail">Inventory: {{ product.inventory }}</div>

@@ -32,13 +32,13 @@
     <div class="prodDitail" {% if product.get_discount_price %}
       style="color: red; text-decoration: line-through;"
       {% else %} style="color: green;" {% endif %}
-    ><span style="margin-right: 10px">Price: </span> <input class="priceInput" name="price" value="{{ product.price }}" style="flex-grow: 1;">
+    ><span style="margin-right: 10px">Price: </span> <input class="priceInput" name="price" value="{{ product.price }}" style="flex-grow: 1;"> {{ site.get_currency_display }}
       <button type="submit" class="edit-button save-button"></button>
     </div>
-  <div class="prodDitail" {% if product.get_discount_price %}
+  <div class="prodDitail" {% if product.get_discount_price %} {{ site.get_currency_display }}
       style="color: green;"
       {% else %} style="display: none;" {% endif %}
-    >Discount price: {{ product.get_discount_price }}
+    >Discount price: {{ product.get_discount_price }} {{ site.get_currency_display }}
     </div>
   <div style="display: flex">
     <div class="prodDitail"><span style="margin-right: 10px">Inventory: </span> <input class="priceInput" name="inventory" value="{{ product.inventory }}" style="flex-grow: 1; border-radius: 20px;">

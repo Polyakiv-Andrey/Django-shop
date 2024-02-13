@@ -38,12 +38,12 @@
       <div class="goodsInfoPayment">
         <div>Name: {{ goods.product.name }}</div>
         <div>Amount: {{ goods.amount }}</div>
-        <div>Total: <span style="color: #4CAF50">{{ goods.get_total }}</span></div>
+        <div>Total: <span style="color: #4CAF50">{{ goods.get_total }} {{ site.get_currency_display }}</span></div>
       </div>
       </div>
     {% endfor %}
 
-  <div id="totalPricePayment">Total: <span style="color: green"> {{ basket.get_basket_total_price }}</span></div>
+  <div id="totalPricePayment">Total: <span style="color: green"> {{ basket.get_basket_total_price }} {{ site.get_currency_display }}</span></div>
 
   <button id="buyBasket">Submit Payment</button>
   </form>

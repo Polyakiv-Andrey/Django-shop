@@ -43,13 +43,13 @@
       </div>
       <div class="priceProductList">
         <span style="{% if product.get_discount_price %}text-decoration: line-through; color: red;{% endif %}">
-        Price: {{ product.price }}
+        Price: {{ product.price }} {{ site.get_currency_display }}
         </span>
       </div>
 
       {% if product.get_discount_price %}
         <div class="discountList">
-          <span style="color: darkgreen"> Discount price: {{ product.get_discount_price }} </span>
+          <span style="color: darkgreen"> Discount price: {{ product.get_discount_price }} {{ site.get_currency_display }}</span>
         </div>
       {% endif %}
 

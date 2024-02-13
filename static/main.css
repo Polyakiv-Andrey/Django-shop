@@ -38,6 +38,7 @@ body {
 
 #logo {
   width: 40px;
+  height: 40px;
   border-radius: 50%;
   padding: 10px;
   transition: transform 0.3s ease;
@@ -2426,4 +2427,84 @@ form:not(.discount-form-container) .discount-form-submit:hover {
   position: absolute;
   left: 10px;
   top: 55px
+}
+
+#siteInfoEdit {
+  text-align: center;
+}
+
+/*.siteEditInfo {*/
+/*  display: flex;*/
+/*  flex-direction: column;*/
+/*  align-items: center;*/
+/*}*/
+
+.siteEditInfo {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  font-family: 'Texturina', serif;
+}
+
+.siteEditInfoDiv {
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.siteEditInfoDiv > div {
+  flex-basis: 20%;
+  text-align: right;
+  margin-right: 10px;
+}
+
+.siteEditInfoInput {
+  flex-grow: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.siteEditInfoButton {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  margin-left: 10px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.siteEditInfoButton:hover {
+  background-color: #0056b3;
+}
+
+.aboutUsContainer {
+  display: flex;
+  font-family: 'Texturina', serif;
+}
+.ShopImage {
+  width: 40vw;
+  height: calc(100vh - 100px);
+  border-radius: 30px;
+  margin: 20px;
+}
+.aboutUsContentContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.titleAboutUs {
+  text-align: center;
+}
+
+
+.aboutUsDescriptionContainer {
+  margin: 0 80px 20px 80px;
+  border-radius: 30px;
+  border: 4px solid white;
+  padding: 20px;
+  background-color: #f3e9f7;
 }

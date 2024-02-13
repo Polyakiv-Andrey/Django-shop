@@ -18,10 +18,10 @@
 </head>
 <body>
   <div id="main-header">
-  {% include 'includes/header.html' %}
+  {% include 'includes/header.html' with site=site %}
   </div>
   <div id="admin-header" style="display: none;">
-  {% include 'includes/admin_header.html' %}
+  {% include 'includes/admin_header.html' with site=site %}
   </div>
   <main>
       {% block content %}{% endblock %}

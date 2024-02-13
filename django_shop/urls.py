@@ -32,6 +32,7 @@ urlpatterns = [
     path('payment/', include("payment.urls", namespace="payment")),
     path('orders/', include("orders.urls", namespace="orders")),
     path('reviews/', include("reviews.urls", namespace="reviews")),
+    path('about-us/', include("site_detail.urls", namespace="site_detail")),
     path('', HomePageView.as_view(), name="home"),
 ] + static(
     settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0]
