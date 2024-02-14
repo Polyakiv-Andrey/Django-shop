@@ -19,7 +19,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv()
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
@@ -49,6 +48,7 @@ INSTALLED_APPS = [
     'reviews',
     'site_detail',
     'support',
+    'notifications',
 ]
 
 MIDDLEWARE = [
@@ -150,3 +150,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STRIPE_PUBLIC_KEY = os.getenv("STRIPE_PUBLIC_KEY")
 STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
+
+# Celery settings
+CELERY_BROKER_URL = "redis://localhost:6379"
+CELERY_RESULT_BACKEND = "redis://localhost:6379"
+
+# SENDGRID
+SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
+SUPPORT_RESPONSE = 'd-81c4304ee59e46fb8f0567c34c1b5870'

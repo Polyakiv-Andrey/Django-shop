@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div style="display: flex; flex-wrap: wrap;">
+  {% for support in supportrequest_list %}
+    <div class="supportContainer" {% if support.response_send  %} style="border: 3px solid green" {% else %} style="border: 3px solid red" {% endif %}>
+    <div class="supportTitle">Request</div>
+    <div>Name: {{ support.name }}</div>
+    <div>Email: {{ support.email }}</div>
+    <div>Topic: {{ support.topic }}</div>
+    <div><textarea class="supportText" disabled="true"> {{ support.payload }}</textarea></div>
+    <div style="text-align: right">Date: {{ support.date_created }}</div>
+    <form method="post" action="{% url 'support:send-support-response' support.id %}">
+      {% csrf_token %}
+      <div class="supportTitle">Response</div>
+      <div><textarea name="response" class="supportText" {% if support.response_send %} disabled="true" {% endif %}>{{ support.response }} </textarea></div>
+      <div style="display: flex; justify-content: center; margin: 3px">
+        {% if not support.response_send  %}
+          <button style="align-items: center" type="submit" class="formButton">Send</button>
+        {% endif %}</div>
+    </form>
+
+    </div>
+  {% endfor %}
+  </div>
+    <div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}">&laquo; Previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Next &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+{% endblock %}

@@ -1,6 +1,9 @@
-from django.shortcuts import render
+from django.db import transaction
+from django.shortcuts import render, redirect
 from django.views import generic
 
+from django_shop import settings
+from notifications.tasks import send_email_task
 from support.models import SupportRequest
 
 
@@ -26,3 +29,24 @@ class ContactUsView(generic.View):
             )
             context = {"status": "Success"}
         return render(request=request, template_name="shop/support.html", context=context)
+
+
+class AdminSupportListView(generic.ListView):
+    model = SupportRequest
+    queryset = SupportRequest.objects.all().order_by("response_send")
+    paginate_by = 10
+    template_name = "adminPanel/supportPage.html"
+
+
+class SendSupportResponseView(generic.View):
+
+    def post(self, request, *args, **kwargs):
+        with transaction.atomic():
+            support_id = self.kwargs.get("id")
+            support = SupportRequest.objects.get(id=support_id)
+            support.response_send = True
+            support.response = self.request.POST.get("response")
+            support.save()
+            send_email_task.delay(settings.SUPPORT_RESPONSE, {"data": support.response}, support.email)
+
+        return redirect('support:admin-support')

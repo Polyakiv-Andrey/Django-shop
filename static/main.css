@@ -2634,3 +2634,31 @@ textarea.supportInput {
 .thTransactionHeader {
   background-color: #d7d0ff;
 }
+
+.supportContainer {
+  width: 260px;
+  margin: 10px auto;
+  height: auto;
+  background-color: #9B72AA;
+  border: 3px solid white;
+  border-radius: 30px;
+  padding: 10px 30px;
+  font-family: 'Texturina', serif;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+}
+.supportTitle {
+  text-align: center;
+   font-size: 18px;
+  padding: 5px 0;
+
+}
+
+.supportText {
+  width: 240px;
+  margin-top: 5px;
+  height: 55px;
+  border-radius: 30px;
+  padding: 10px;
+}
