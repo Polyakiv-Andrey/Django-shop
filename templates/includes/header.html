@@ -1,16 +1,19 @@
 {% load static %}
 
 <header id="header" >
+<a href="{% url 'home' %}">
      {% if site.logo %}
         <img id='logo' class="logo" src="{{ site.logo.url }}" alt="logo">
     {% else %}
         <img id='logo' class="logo" src="{% static 'images/logo.png' %}" alt="logo">
     {% endif %}
+</a>
     {% if site.site_name %}
        <span class="company-name"> {{ site.site_name }}</span>
     {% else %}
         <span class="company-name">Trerddfy</span>
     {% endif %}
+
   {% if user.is_superuser %}
     <button class="admin-button" onclick="toggleHeaders()">
       <span>Admin panel</span>
@@ -25,7 +28,7 @@
         <li class="nav-item"><a href="{% url 'products:product-list' %}"><i class="fas fa-box"></i><span> Products</span></a></li>
         <li class="nav-item"><a href="{% url 'site_detail:about_us' %}"><i class="fas fa-users"></i><span> About Us</span></a></li>
         <li class="nav-item"><a href="{% url 'orders:user-order-list' %}"><i class="fas fa-shopping-cart"></i><span> Orders</span></a></li>
-        <li class="nav-item"><a href="#"><i class="fas fa-headset"></i><span> Support</span></a></li>
+        <li class="nav-item"><a href="{% url 'support:contact-us' %}"><i class="fas fa-headset"></i><span> Support</span></a></li>
       </ul>
     </nav>
   {% if user.is_superuser == False %}

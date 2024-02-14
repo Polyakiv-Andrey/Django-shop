@@ -119,9 +119,10 @@ class CreatePaymentAPIView(generic.View):
         else:
             return JsonResponse({'message': 'Payment not confirmed'})
 
-        # 1)Произвести оплату
-        # 2)Создать заказ
-        # 3)Удалить все из корзины
-        # 4)Удалить кукисы про товар
-        # 5)Отправить письмо менеджеру на почту
-        # 6)Перевести пользователя на страницу с заказами
+
+class PaymentHistoryView(generic.ListView):
+    model = Payments
+    queryset = Payments.objects.all().order_by("-data_created")
+    template_name = 'adminPanel/payments-history.html'
+    paginate_by = 20
+

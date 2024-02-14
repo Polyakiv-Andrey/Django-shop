@@ -24,6 +24,7 @@ class Payments(models.Model):
     transaction_status = models.CharField(choices=TRANSACTION_STATUS, default=TransactionStatus.pending)
 
     def __str__(self):
-        return self.amount
+        return str(self.amount) + " " + self.currency
+
 
 

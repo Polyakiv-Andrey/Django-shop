@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+  {% if status %}
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+          var notification = document.getElementById('notificationSupport');
+          if (notification) {
+              notification.style.display = 'block';
+              setTimeout(function() {
+                  notification.style.display = 'none';
+              }, 3000);
+          }
+        });
+      </script>
+    <div id="notificationSupport" {% if status == "Failed" %} style="background-color: red" {% endif %}>
+        {{ status }}
+    </div>
+  {% endif %}
+
+  <div class="aboutUsContentContainer">
+  <div class="supportBlock">
+    <img class="supportImage" src="{% static 'images/support.png' %}" alt="Support">
+
+    <div class="form-container supportForm">
+      <form method="post" action="{% url "support:contact-us" %}">
+        {% csrf_token %}
+        <h2 class="titleAboutUs">Support</h2>
+              <div class="supportDiv" style="display: flex">
+        <div style="text-align: left; margin-right: 0">Name:</div>
+        <input class="supportInput" name="name">
+      </div>
+      <div class="supportDiv" style="display: flex">
+        <div style="text-align: left; margin-right: 0;">Email:</div>
+        <input class="supportInput" name="email" required="True">
+      </div>
+      <div class="supportDiv" style="display: flex">
+        <div style="text-align: left; margin-right: 0">Topic:</div>
+        <input class="supportInput" name="topic" required="True">
+      </div>
+      <div class="supportDiv" style="display: flex">
+        <div style="text-align: left; margin-right: 0">Payload:</div>
+        <textarea class="supportInput" name="payload"></textarea>
+      </div>
+        <div class="button-container">
+      <button class="supportButton formButton" type="submit">Send</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
