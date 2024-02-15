@@ -1,4 +1,5 @@
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.http import HttpResponseRedirect
 from django.views import generic
 
 from orders.models import Order
@@ -30,3 +31,20 @@ class UserOrderListView(generic.ListView):
 
         context['order_list'] = orders
         return context
+
+
+class AdminOrderListView(generic.ListView):
+    model = Order
+    template_name = 'adminPanel/order-list.html'
+    context_object_name = 'order_list'
+    paginate_by = 5
+    queryset = Order.objects.all().order_by('data_created')
+
+
+class ChangeOrderStatusView(generic.View):
+
+    def post(self, request, *args, **kwargs):
+        order = Order.objects.get(id=self.kwargs.get("id"))
+        order.delivery_status = self.request.POST.get("delivery_status")
+        order.save()
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))

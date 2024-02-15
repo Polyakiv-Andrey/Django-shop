@@ -20,7 +20,7 @@ class EditSiteInfoView(generic.View):
         if 'logo' in request.FILES:
             site.logo = request.FILES['logo']
         if 'about_us_image' in request.FILES:
-            site.logo = request.FILES['about_us_image']
+            site.about_us_image = request.FILES['about_us_image']
         site.save()
         return redirect('site_detail:edit-site-info')
 

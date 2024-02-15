@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+  {% for order in order_list %}
+    <div class="orderAdmin"
+         {% if order.delivery_status != "delivered" %}
+           style="border: 3px solid red"
+         {% else %}
+         style="border: 3px solid green"
+         {% endif %}
+    >
+      <div class="orderDivContainer">
+        <div class="titleOrderDelivery">Delivery Detail</div>
+        <div>Email: {{ order.delivery_info.email }}</div>
+        <div>Phone: {{ order.delivery_info.phone }}</div>
+        <div>Name: {{ order.delivery_info.first_name }} {{ order.delivery_info.last_name }}</div>
+        <div>Country: {{ order.delivery_info.country }}</div>
+        <div>State/Province: {{ order.delivery_info.state_province }}</div>
+        <div>City: {{ order.delivery_info.city }}</div>
+        <div>Street address: {{ order.delivery_info.street_address }}</div>
+        <div>Postal code: {{ order.delivery_info.postal_code }}</div>
+      </div>
+      <div class="orderDivContainer">
+        {% for product in order.goods.all %}
+          <div class="productOrderContainerAdmin">
+            <div>
+                {% if product.product.images.all %}
+                  <div>
+                    {% for image in product.product.images.all %}
+                      {% if image.main == True %}
+                      <img class="productImageOrderAdmin" src="{{ image.image.url }}" alt="{{ product.name }}">
+                      {% endif %}
+                    {% endfor %}
+                      </div>
+                    {% else %}
+                      <img class="productImageOrderAdmin" src="{% static 'images/default-product-item.png' %}" alt="{{ product.name }}">
+                    {% endif %}
+                  </div>
+          <div style="margin: 20px">
+            <div>Name: {{ product.product.name }}</div>
+            <div>Amount: {{ product.amount }}</div>
+          </div>
+          </div>
+
+        {% endfor %}
+      </div>
+     <div class="orderDivContainer">
+       <div style="display: flex">
+         <div class="statusOrder">
+            <div class="scaleElem scaleElem1" style="background-color: #4CAF50">Order created</div>
+            <div class="scaleElem scaleElem2" {% if order.delivery_status != 'created' %}style="background-color: #4CAF50"{% endif %}>Take in work</div>
+            <div class="scaleElem scaleElem3" {% if order.delivery_status == 'shipped' or order.delivery_status == 'delivered' %}style="background-color: #4CAF50"{% endif %}>Send</div>
+            <div class="scaleElem scaleElem4" {% if order.delivery_status == 'delivered' %}style="background-color: #4CAF50"{% endif %}>Delivered</div>
+         </div>
+         <div class="statusOrder">
+           <div class="scaleElem scaleElem1" style="background-color: #f3e9f7;">
+             <form method="post" action="{% url 'orders:change-order-status' order.id %}">
+               {% csrf_token %}
+               <input type="hidden" name="delivery_status" value='created'>
+               <button  class="form-button" type="submit">Chose</button>
+             </form>
+           </div>
+           <div class="scaleElem scaleElem1" style="background-color: #f3e9f7;">
+             <form method="post" action="{% url 'orders:change-order-status' order.id %}">
+               {% csrf_token %}
+               <input type="hidden" name="delivery_status" value='in_progress'>
+               <button  class="form-button" type="submit">Chose</button>
+             </form>
+           </div>
+           <div class="scaleElem scaleElem1" style="background-color: #f3e9f7;">
+            <form method="post" action="{% url 'orders:change-order-status' order.id %}">
+               {% csrf_token %}
+               <input type="hidden" name="delivery_status" value='shipped'>
+               <button  class="form-button" type="submit">Chose</button>
+             </form>
+           </div>
+           <div class="scaleElem scaleElem1" style="background-color: #f3e9f7;">
+             <form method="post" action="{% url 'orders:change-order-status' order.id %}">
+               {% csrf_token %}
+               <input type="hidden" name="delivery_status" value='delivered'>
+               <button  class="form-button" type="submit">Chose</button>
+             </form>
+           </div>
+         </div>
+       </div>
+     </div>
+    </div>
+  {% endfor %}
+    <div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}">&laquo; Previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Next &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+{% endblock %}
